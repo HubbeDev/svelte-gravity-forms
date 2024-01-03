@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4685ccb0fe8a5fce812351dc2ec296d",
+    "content-hash": "cc907a3b75af6096e27d79b158155631",
     "packages": [
         {
             "name": "composer/installers",
@@ -300,7 +300,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../packages/wp-svelte-plugin",
-                "reference": "bc14a7b3a3b13bb049175d075241dbaf6a0f683a"
+                "reference": "95aa2adbc5b8466c1f305377767f1b0ebea0aa9a"
             },
             "type": "wordpress-plugin",
             "license": [
@@ -314,7 +314,7 @@
             ],
             "description": "A plugin for sveltekit headless WordPress",
             "transport-options": {
-                "symlink": true,
+                "symlink": false,
                 "relative": true
             }
         },
@@ -324,7 +324,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../packages/wp-svelte-theme",
-                "reference": "6f3df47a15e16c5f8433c4696d2b1503ded59523"
+                "reference": "d216d0c5e65e047a94d116ab144b2e0624d5f380"
             },
             "type": "wordpress-theme",
             "license": [
@@ -338,7 +338,7 @@
             ],
             "description": "A theme for sveltekit headless WordPress",
             "transport-options": {
-                "symlink": true,
+                "symlink": false,
                 "relative": true
             }
         },

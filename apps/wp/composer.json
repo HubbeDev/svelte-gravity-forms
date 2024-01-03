@@ -37,14 +37,14 @@
 			"type": "path",
 			"url": "../../packages/wp-svelte-plugin",
 			"options": {
-				"symlink": true
+				"symlink": false
 			}
 		},
 		{
 			"type": "path",
 			"url": "../../packages/wp-svelte-theme",
 			"options": {
-				"symlink": true
+				"symlink": false
 			}
 		}
 	],
