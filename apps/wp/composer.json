@@ -1,0 +1,83 @@
+{
+	"name": "hubbedev/headless-wp",
+	"description": "A headless WordPress starter theme with WPGraphQL",
+	"type": "project",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "HubbeDev",
+			"email": "info@responsivhub.com"
+		}
+	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org"
+		},
+		{
+			"type": "composer",
+			"url": "https://connect.advancedcustomfields.com"
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "junaidbhura/gravityforms",
+				"version": "2.5.15.3",
+				"type": "wordpress-plugin",
+				"dist": {
+					"type": "zip",
+					"url": "https://www.gravityforms.com"
+				},
+				"require": {
+					"junaidbhura/composer-wp-pro-plugins": "*"
+				}
+			}
+		},
+		{
+			"type": "path",
+			"url": "../../packages/wp-svelte-plugin",
+			"options": {
+				"symlink": true
+			}
+		},
+		{
+			"type": "path",
+			"url": "../../packages/wp-svelte-theme",
+			"options": {
+				"symlink": true
+			}
+		}
+	],
+	"config": {
+		"vendor-dir": "wp-content/vendor",
+		"allow-plugins": {
+			"composer/installers": true,
+			"junaidbhura/composer-wp-pro-plugins": true
+		}
+	},
+	"extra": {
+		"installer-paths": {
+			"wp-content/plugins/{$name}/": [
+				"type:wordpress-plugin"
+			],
+			"wp-content/mu-plugins/{$name}/": [
+				"type:wordpress-muplugin"
+			],
+			"wp-content/themes/{$name}/": [
+				"type:wordpress-theme"
+			]
+		}
+	},
+	"require": {
+		"hubbedev/wp-svelte-plugin": "dev-main",
+		"hubbedev/wp-svelte-theme": "dev-main",
+		"wpengine/advanced-custom-fields-pro": "*",
+		"wp-graphql/wp-graphql-acf": "^0.3",
+		"wpackagist-plugin/add-wpgraphql-seo": "^4.0",
+		"wpackagist-plugin/wordpress-seo": "^21.0",
+		"wpackagist-plugin/wp-graphql": "^1.0",
+		"junaidbhura/gravityforms": "*",
+		"wpackagist-plugin/acf-gravityforms-add-on": "*",
+		"wpackagist-plugin/svg-support": "*"
+	}
+}
