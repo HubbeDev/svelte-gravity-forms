@@ -2,9 +2,9 @@ import { onMount } from 'svelte';
 import { get, writable } from 'svelte/store';
 import { PUBLIC_GF_API_URL } from '$env/static/public';
 import { z } from 'zod';
-import { omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
-
-import type { GravityFormsFormObjectProps } from './types.js';
+import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
+import { superForm, superValidateSync } from 'sveltekit-superforms/client';
+import type { GFFieldsProps, GFFormObjectProps } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
 
 export type CreateGravityFromsProps = {
@@ -35,14 +35,10 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const submitButtonRef = writable<HTMLAttributes<HTMLButtonElement> | undefined>(undefined);
 
 	// states
-	const formObject = writable<GravityFormsFormObjectProps>(undefined);
-	const formFields = writable<any[]>(undefined);
-	const formIdStore = writable(withDefaults.formId);
 
-	const formSchema = z.object({
-		username: z.string().min(2).max(50)
-	});
-	const formSchemaStore = writable(formSchema);
+	const formObject = writable<GFFormObjectProps>(undefined);
+	const formFields = writable<GFFieldsProps[]>(undefined);
+	const formIdStore = writable(withDefaults.formId);
 
 	/**
 	 *  Get form object from Gravity Forms API
@@ -52,48 +48,92 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			method: 'GET'
 		});
 
-		const data = (await res.json()) as GravityFormsFormObjectProps;
+		const data = (await res.json()) as GFFormObjectProps;
 		return data;
 	}
 
-	async function setFormFields(formObject: GravityFormsFormObjectProps) {
+	async function setFormFields(formObject: GFFormObjectProps) {
 		const fields = formObject.fields;
 		if (!fields) return;
 		formFields.set(fields);
 	}
 
-	/**
-	 * Get form object from Gravity Forms API
-	 */
-	function getFormFields() {
-		const form = get(formObject);
-		const fields = form.fields;
-		if (!fields) return;
-		return fields;
+	async function onSubmitForm(formData: unknown) {
+		console.log('onSubmitForm', formData);
 	}
-
-	/* 	function transformFormFields() {
-		const formFields = getFormFields();
-	} */
 
 	/**
 	 * Set form object on mount
 	 */
 	onMount(async () => {
 		if (!get(formRef)) return;
-		const formObject = await getFormObject();
-
-		await setFormFields(formObject);
+		const formData = await getFormObject();
+		console.log('formData', formData);
+		formObject.set(formData);
+		await setFormFields(formData);
 	});
+
+	effect([formObject], ([$formObject]) => {
+		console.log('formObject', $formObject);
+		if ($formObject && $formObject.fields) {
+			formFields.set($formObject.fields);
+		}
+	});
+
+	/**
+	 * TODO: Create a form schema from the form fields
+	 */
+
+	const formSchema = writable(
+		z.object({
+			test: z.string().min(3).max(10)
+		})
+	);
+	/* effect([formFields], ([$formFields]) => {
+		console.log('formFields', $formFields);
+		if ($formFields) {
+			const fieldsObject = $formFields.reduce((obj, field) => {
+				return {
+					...obj,
+					[field.label]: z.string().min(3).max(10)
+				};
+			}, {});
+
+			formSchema.set(z.object(fieldsObject));
+		}
+	});
+ */
+	/* effect([formSchema], ([$formSchema]) => {
+		console.log('form§Schema', $formSchema);
+	}); */
+
+	const validatedForm = writable(
+		superForm(superValidateSync(get(formSchema)), {
+			SPA: true,
+			validators: get(formSchema),
+			// Reset the form upon a successful result
+			resetForm: true,
+			async onUpdate({ form }) {
+				if (form.valid) {
+					/* 	console.log('form', form); */
+					if (!form.data) return console.log('no data');
+					await onSubmitForm(form.data);
+				}
+			}
+		})
+	);
 
 	return {
 		states: {
 			formSchema,
 			formIdStore,
 			formObject,
-			formFields
+			formFields,
+			validatedForm
 		},
-		methods: {},
+		methods: {
+			onSubmitForm
+		},
 		refs: {
 			formRef,
 			submitButtonRef

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
+	import * as Form from '$lib/components/ui/form/index.js';
 	import { GFButton } from '$components/index.js';
-	import { superForm, superValidateSync } from 'sveltekit-superforms/client';
 
 	import type { Props } from './types.js';
 	import { getCtx } from '../../ctx.js';
@@ -11,44 +10,50 @@
 	export let formId: $$Props['formId'] = undefined;
 
 	const {
-		states: { formSchema },
+		methods: { onSubmitForm },
+		states: { formSchema, formFields, validatedForm },
 		refs: { formRef }
 	} = getCtx();
 
-	const form = superForm(superValidateSync(formSchema), {
-		SPA: true,
-		validators: formSchema,
-		onUpdate({ form }) {
-			if (form.valid) {
-				// TODO: Do something with the validated form.data
-			}
-		}
-	});
+	$: console.log({ $formSchema, $formFields, $validatedForm });
 </script>
 
-{#if !formId}
+{#if !validatedForm}
 	<p>Please provide a formId</p>
 {:else}
 	<Form.Root
 		asChild
 		method="POST"
-		{form}
+		form={$validatedForm}
 		controlled
-		schema={formSchema}
+		schema={$formSchema}
 		let:enhance
 		let:attrs
 		let:config
 		{...$$restProps}
 	>
 		<form method="POST" bind:this={$formRef} use:enhance {...attrs}>
-			<Form.Field {config} name="username">
+			{#if $formFields}
+				{#each $formFields as field}
+					<Form.Field {config} name="test">
+						<Form.Item>
+							<Form.Label>{field.label}</Form.Label>
+							<Form.Input placeholder={field.placeholder ?? ''} />
+							<Form.Description>{field.description}</Form.Description>
+							<Form.Validation />
+						</Form.Item>
+					</Form.Field>
+				{/each}
+			{/if}
+
+			<!-- <Form.Field {config} name="username">
 				<Form.Item>
 					<Form.Label>Username</Form.Label>
 					<Form.Input />
 					<Form.Description>This is your public display name.</Form.Description>
 					<Form.Validation />
 				</Form.Item>
-			</Form.Field>
+			</Form.Field> -->
 			<GFButton type="submit">Submit</GFButton>
 		</form>
 	</Form.Root>

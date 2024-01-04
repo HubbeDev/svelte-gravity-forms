@@ -1,6 +1,6 @@
 // Ref: https://github.com/huntabyte/vaul-svelte/blob/main/src/lib/internal/helpers/store.ts
 
-import type { Readable, Stores, StoresValues, Writable } from 'svelte/store';
+import type { Readable, Stores, StoresValues, Updater, Writable } from 'svelte/store';
 import { derived, writable } from 'svelte/store';
 import { onDestroy, onMount } from 'svelte';
 
@@ -102,6 +102,31 @@ export const safeOnDestroy = (fn: (...args: unknown[]) => unknown) => {
 };
 
 export type ChangeFn<T> = (args: { curr: T; next: T }) => T;
+
+export const overridable = <T>(store: Writable<T>, onChange?: ChangeFn<T>) => {
+	const update = (updater: Updater<T>, sideEffect?: (newValue: T) => void) => {
+		store.update((curr) => {
+			const next = updater(curr);
+			let res: T = next;
+			if (onChange) {
+				res = onChange({ curr, next });
+			}
+
+			sideEffect?.(res);
+			return res;
+		});
+	};
+
+	const set: typeof store.set = (curr) => {
+		update(() => curr);
+	};
+
+	return {
+		...store,
+		update,
+		set
+	};
+};
 
 export type ToWritableStores<T extends Record<string, unknown>> = {
 	[K in keyof T]: Writable<T[K]>;

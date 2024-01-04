@@ -1,7 +1,67 @@
+export type GFFieldsProps = {
+	type?: string;
+	id?: number;
+	formId?: number;
+	label?: string;
+	adminLabel?: string;
+	isRequired?: boolean;
+	size?: string;
+	errorMessage?: string;
+	visibility?: string;
+	inputs?: null;
+	description?: string;
+	allowsPrepopulate?: boolean;
+	inputMask?: boolean;
+	inputMaskValue?: string;
+	inputMaskIsCustom?: boolean;
+	maxLength?: string;
+	inputType?: string;
+	labelPlacement?: string;
+	descriptionPlacement?: string;
+	subLabelPlacement?: string;
+	placeholder?: string;
+	cssClass?: string;
+	inputName?: string;
+	noDuplicates?: boolean;
+	defaultValue?: string;
+	enableAutocomplete?: boolean;
+	autocompleteAttribute?: string;
+	choices?: string;
+	conditionalLogic?: string;
+	productField?: string;
+	layoutGridColumnSpan?: string;
+	enablePasswordInput?: boolean;
+	enableEnhancedUI?: number;
+	layoutGroupId?: string;
+	multipleFiles?: boolean;
+	maxFiles?: string;
+	calculationFormula?: string;
+	calculationRounding?: string;
+	enableCalculation?: string;
+	disableQuantity?: boolean;
+	displayAllCategories?: boolean;
+	useRichTextEditor?: boolean;
+	errors?: any[];
+	checkboxLabel?: string;
+	pageNumber?: number;
+	fields?: string;
+};
+
+export type GFButtonProps = {
+	type?: 'text';
+	text?: string;
+	imageUrl?: string;
+	conditionalLogic?: null;
+	width?: 'auto';
+	location?: 'bottom';
+	layoutGridColumnSpan?: number;
+	id?: string;
+};
+
 /**
  * @todo: fix any types in this file
  */
-export type GravityFormsFormObjectProps = {
+export type GFFormObjectProps = {
 	id?: number;
 	title?: string;
 	description?: string;
@@ -10,8 +70,8 @@ export type GravityFormsFormObjectProps = {
 	is_active?: boolean;
 	is_trash?: boolean;
 	version?: string;
-	fields?: any[];
-	button?: any[];
+	fields?: GFFieldsProps[];
+	button?: GFButtonProps[];
 	notifications?: any[];
 	confirmations?: any[];
 	confirmation?: any[];
