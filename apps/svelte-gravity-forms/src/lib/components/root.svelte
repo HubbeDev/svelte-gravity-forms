@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Form from './form/form.svelte';
+	import { GFForm, GFButton } from '$components/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	type $$Props = Props;
 
 	export let formId: $$Props['formId'] = undefined;
@@ -14,10 +13,11 @@
 		// eslint-disable-next-line no-empty-pattern
 		methods: {},
 		// eslint-disable-next-line no-empty-pattern
-		options: {}
+		options: {},
+		refs: { formRef }
 	} = setCtx({
 		formId: formId
 	});
 </script>
 
-<Form bind:formId />
+<GFForm bind:formId />

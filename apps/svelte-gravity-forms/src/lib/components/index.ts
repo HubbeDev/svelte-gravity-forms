@@ -1,1 +1,4 @@
-export { default as Root } from './root.svelte';
+import { default as GFForm } from './form/form.svelte';
+import { default as GFButton } from './button/button.svelte';
+
+export { GFForm, GFButton };

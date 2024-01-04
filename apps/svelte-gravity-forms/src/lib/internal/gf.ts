@@ -1,8 +1,11 @@
-import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 import { onMount } from 'svelte';
 import { get, writable } from 'svelte/store';
 import { PUBLIC_GF_API_URL } from '$env/static/public';
+import { z } from 'zod';
+import { omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
+
 import type { GravityFormsFormObjectProps } from './types.js';
+import type { HTMLAttributes } from 'svelte/elements';
 
 export type CreateGravityFromsProps = {
 	formId?: number;
@@ -27,10 +30,19 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		)
 	);
 
+	// refs
 	const formRef = writable<HTMLFormElement | undefined>(undefined);
+	const submitButtonRef = writable<HTMLAttributes<HTMLButtonElement> | undefined>(undefined);
+
+	// states
 	const formObject = writable<GravityFormsFormObjectProps>(undefined);
 	const formFields = writable<any[]>(undefined);
 	const formIdStore = writable(withDefaults.formId);
+
+	const formSchema = z.object({
+		username: z.string().min(2).max(50)
+	});
+	const formSchemaStore = writable(formSchema);
 
 	/**
 	 *  Get form object from Gravity Forms API
@@ -53,14 +65,14 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	/**
 	 * Get form object from Gravity Forms API
 	 */
-	/* 	function getFormFields() {
+	function getFormFields() {
 		const form = get(formObject);
 		const fields = form.fields;
 		if (!fields) return;
 		return fields;
 	}
- */
-	/* function transformFormFields() {
+
+	/* 	function transformFormFields() {
 		const formFields = getFormFields();
 	} */
 
@@ -70,19 +82,21 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	onMount(async () => {
 		if (!get(formRef)) return;
 		const formObject = await getFormObject();
-		console.log(formObject);
+
 		await setFormFields(formObject);
 	});
 
 	return {
 		states: {
+			formSchema,
 			formIdStore,
 			formObject,
 			formFields
 		},
 		methods: {},
 		refs: {
-			formRef
+			formRef,
+			submitButtonRef
 		},
 		options
 		// Your methods here
