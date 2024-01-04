@@ -1,11 +1,8 @@
 import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 import { onMount } from 'svelte';
 import { get, writable } from 'svelte/store';
-import {
-	PUBLIC_GF_CONSUMER_KEY,
-	PUBLIC_GF_CONSUMER_SECRECT,
-	PUBLIC_GF_API_URL
-} from '$env/static/public';
+import { PUBLIC_GF_API_URL } from '$env/static/public';
+import type { GravityFormsFormObjectProps } from './types.js';
 
 export type CreateGravityFromsProps = {
 	formId?: number;
@@ -31,32 +28,59 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	);
 
 	const formRef = writable<HTMLFormElement | undefined>(undefined);
-	const formObject = writable<any>(undefined);
+	const formObject = writable<GravityFormsFormObjectProps>(undefined);
+	const formFields = writable<any[]>(undefined);
+	const formIdStore = writable(withDefaults.formId);
 
-	onMount(async () => {
-		if (!get(formRef)) return;
-
-		const form = await getFormObject();
-		formObject.set(form);
-	});
-
-	async function getFormObject(): Promise<any> {
-		const res = await fetch(`${PUBLIC_GF_API_URL}forms?include[]=31`, {
-			method: 'GET',
-			headers: {
-				Authorization: 'Basic ' + btoa(`${PUBLIC_GF_CONSUMER_KEY}:${PUBLIC_GF_CONSUMER_SECRECT}`)
-			}
+	/**
+	 *  Get form object from Gravity Forms API
+	 */
+	async function getFormObject() {
+		const res = await fetch(`${PUBLIC_GF_API_URL}/forms/1`, {
+			method: 'GET'
 		});
 
-		const data = await res.json();
+		const data = (await res.json()) as GravityFormsFormObjectProps;
 		return data;
 	}
 
+	async function setFormFields(formObject: GravityFormsFormObjectProps) {
+		const fields = formObject.fields;
+		if (!fields) return;
+		formFields.set(fields);
+	}
+
+	/**
+	 * Get form object from Gravity Forms API
+	 */
+	/* 	function getFormFields() {
+		const form = get(formObject);
+		const fields = form.fields;
+		if (!fields) return;
+		return fields;
+	}
+ */
+	/* function transformFormFields() {
+		const formFields = getFormFields();
+	} */
+
+	/**
+	 * Set form object on mount
+	 */
+	onMount(async () => {
+		if (!get(formRef)) return;
+		const formObject = await getFormObject();
+		console.log(formObject);
+		await setFormFields(formObject);
+	});
+
 	return {
-		states: {},
-		methods: {
-			getFormObject
+		states: {
+			formIdStore,
+			formObject,
+			formFields
 		},
+		methods: {},
 		refs: {
 			formRef
 		},
