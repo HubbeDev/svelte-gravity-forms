@@ -1,21 +1,21 @@
 {
-  "name": "svelte-gravity-forms",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "npm run dev:wordpress && turbo run dev",
-    "dev:wordpress": "cd apps/wp && pnpm run dev && cd ../../",
-    "lint": "turbo run lint",
-    "format": "prettier --write .",
-    "setup": "chmod +x setup.sh && ./setup.sh"
-  },
-  "devDependencies": {
-    "eslint": "^8.54.0",
-    "prettier": "^3.1.0",
-    "turbo": "latest"
-  },
-  "packageManager": "pnpm@8.9.0",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "svelte-gravity-forms",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "npm run dev:wordpress && turbo run dev",
+		"dev:wordpress": "cd apps/wp && pnpm run dev && cd ../../",
+		"lint": "turbo run lint",
+		"format": "prettier --write .",
+		"setup": "chmod +x setup.sh && ./setup.sh"
+	},
+	"devDependencies": {
+		"eslint": "^8.54.0",
+		"prettier": "^3.1.0",
+		"turbo": "latest"
+	},
+	"packageManager": "pnpm@8.9.0",
+	"engines": {
+		"node": ">=18"
+	}
 }

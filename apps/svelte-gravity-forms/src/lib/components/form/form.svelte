@@ -1,30 +1,45 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { GFButton } from '$components/index.js';
-
-	import type { Props } from './types.js';
+	/* 	import type { Props } from './types.js'; */
 	import { getCtx } from '../../ctx.js';
+	import { superForm, superValidateSync } from 'sveltekit-superforms/client';
 
-	type $$Props = Props;
-
-	export let formId: $$Props['formId'] = undefined;
+	/* 	type $$Props = Props;
+	 */
+	/* 	export let formId: $$Props['formId'] = undefined; */
 
 	const {
 		methods: { onSubmitForm },
-		states: { formSchema, formFields, validatedForm },
+		states: { formSchema, formFields },
 		refs: { formRef }
 	} = getCtx();
 
-	$: console.log({ $formSchema, $formFields, $validatedForm });
+	$: form = $formSchema
+		? superForm(superValidateSync($formSchema), {
+				SPA: true,
+				validators: $formSchema,
+				// Reset the form upon a successful result
+				applyAction: true,
+				invalidateAll: true,
+				resetForm: true,
+				async onUpdate({ form }) {
+					if (form.valid) {
+						if (!form.data) return;
+						await onSubmitForm(form.data);
+					}
+				}
+			})
+		: undefined;
 </script>
 
-{#if !validatedForm}
+{#if !form}
 	<p>Please provide a formId</p>
 {:else}
 	<Form.Root
 		asChild
 		method="POST"
-		form={$validatedForm}
+		{form}
 		controlled
 		schema={$formSchema}
 		let:enhance
@@ -32,10 +47,10 @@
 		let:config
 		{...$$restProps}
 	>
-		<form method="POST" bind:this={$formRef} use:enhance {...attrs}>
+		<form class="w-60" method="POST" bind:this={$formRef} use:enhance {...attrs}>
 			{#if $formFields}
 				{#each $formFields as field}
-					<Form.Field {config} name="test">
+					<Form.Field {config} name={`input_${field.id}`}>
 						<Form.Item>
 							<Form.Label>{field.label}</Form.Label>
 							<Form.Input placeholder={field.placeholder ?? ''} />
@@ -46,14 +61,6 @@
 				{/each}
 			{/if}
 
-			<!-- <Form.Field {config} name="username">
-				<Form.Item>
-					<Form.Label>Username</Form.Label>
-					<Form.Input />
-					<Form.Description>This is your public display name.</Form.Description>
-					<Form.Validation />
-				</Form.Item>
-			</Form.Field> -->
 			<GFButton type="submit">Submit</GFButton>
 		</form>
 	</Form.Root>

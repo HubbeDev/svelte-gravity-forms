@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GFForm, GFButton } from '$components/index.js';
+	import { GFForm } from '$components/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
 
@@ -7,15 +7,7 @@
 
 	export let formId: $$Props['formId'] = undefined;
 
-	const {
-		// eslint-disable-next-line no-empty-pattern
-		states: {},
-		// eslint-disable-next-line no-empty-pattern
-		methods: {},
-		// eslint-disable-next-line no-empty-pattern
-		options: {},
-		refs: { formRef }
-	} = setCtx({
+	setCtx({
 		formId: formId
 	});
 </script>

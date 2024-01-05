@@ -1,9 +1,9 @@
 import { onMount } from 'svelte';
-import { get, writable } from 'svelte/store';
+import { get, writable, type Writable } from 'svelte/store';
 import { PUBLIC_GF_API_URL } from '$env/static/public';
-import { z } from 'zod';
-import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
-import { superForm, superValidateSync } from 'sveltekit-superforms/client';
+import { z, type AnyZodObject } from 'zod';
+import { omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
+
 import type { GFFieldsProps, GFFormObjectProps } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
 
@@ -35,27 +35,21 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const submitButtonRef = writable<HTMLAttributes<HTMLButtonElement> | undefined>(undefined);
 
 	// states
-
 	const formObject = writable<GFFormObjectProps>(undefined);
 	const formFields = writable<GFFieldsProps[]>(undefined);
 	const formIdStore = writable(withDefaults.formId);
+	const formSchema = writable<AnyZodObject>();
 
 	/**
 	 *  Get form object from Gravity Forms API
 	 */
-	async function getFormObject() {
-		const res = await fetch(`${PUBLIC_GF_API_URL}/forms/1`, {
+	async function getFormObject(formId: number) {
+		const res = await fetch(`${PUBLIC_GF_API_URL}/forms/${formId}`, {
 			method: 'GET'
 		});
 
 		const data = (await res.json()) as GFFormObjectProps;
 		return data;
-	}
-
-	async function setFormFields(formObject: GFFormObjectProps) {
-		const fields = formObject.fields;
-		if (!fields) return;
-		formFields.set(fields);
 	}
 
 	async function onSubmitForm(formData: unknown) {
@@ -66,70 +60,47 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	 * Set form object on mount
 	 */
 	onMount(async () => {
-		if (!get(formRef)) return;
-		const formData = await getFormObject();
-		console.log('formData', formData);
+		if (!get(formIdStore)) {
+			return;
+		}
+		const formData = await getFormObject(get(formIdStore));
 		formObject.set(formData);
-		await setFormFields(formData);
-	});
 
-	effect([formObject], ([$formObject]) => {
-		console.log('formObject', $formObject);
-		if ($formObject && $formObject.fields) {
-			formFields.set($formObject.fields);
-		}
-	});
+		if (formData && formData.fields) {
+			formFields.set(formData.fields);
 
-	/**
-	 * TODO: Create a form schema from the form fields
-	 */
+			const fieldsForSchema = formData.fields.map((field) => {
+				console.log('field', field);
+				const name = `input_${field.id}`;
 
-	const formSchema = writable(
-		z.object({
-			test: z.string().min(3).max(10)
-		})
-	);
-	/* effect([formFields], ([$formFields]) => {
-		console.log('formFields', $formFields);
-		if ($formFields) {
-			const fieldsObject = $formFields.reduce((obj, field) => {
-				return {
-					...obj,
-					[field.label]: z.string().min(3).max(10)
-				};
-			}, {});
-
-			formSchema.set(z.object(fieldsObject));
-		}
-	});
- */
-	/* effect([formSchema], ([$formSchema]) => {
-		console.log('form§Schema', $formSchema);
-	}); */
-
-	const validatedForm = writable(
-		superForm(superValidateSync(get(formSchema)), {
-			SPA: true,
-			validators: get(formSchema),
-			// Reset the form upon a successful result
-			resetForm: true,
-			async onUpdate({ form }) {
-				if (form.valid) {
-					/* 	console.log('form', form); */
-					if (!form.data) return console.log('no data');
-					await onSubmitForm(form.data);
+				let fieldType = z.string();
+				if (field.isRequired) {
+					fieldType = fieldType.min(1, 'This field is required');
 				}
-			}
-		})
-	);
+				if (field.maxLength) {
+					fieldType = fieldType.max(Number(field.maxLength));
+				}
+
+				return {
+					name,
+					fieldType: z.string().min(3).max(10)
+				};
+			});
+
+			const schema = z.object(
+				Object.fromEntries(fieldsForSchema.map((field) => [field.name, field.fieldType]))
+			);
+
+			formSchema.set(schema);
+		}
+	});
 
 	return {
 		states: {
 			formSchema,
 			formIdStore,
 			formObject,
-			formFields,
-			validatedForm
+			formFields
 		},
 		methods: {
 			onSubmitForm
