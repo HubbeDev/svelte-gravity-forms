@@ -56,6 +56,27 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		console.log('onSubmitForm', formData);
 	}
 
+	function getFieldWidth(field: GFFieldsProps) {
+		const layoutGridColumnSpan = Number(field.layoutGridColumnSpan);
+		if (layoutGridColumnSpan >= 1 && layoutGridColumnSpan <= 12) {
+			return `col-span-${layoutGridColumnSpan}`;
+		}
+	}
+
+	function getSubmitButtonWidth(formObject: GFFormObjectProps) {
+		const buttons = formObject.button || [];
+		if (buttons.length === 0) {
+			return;
+		}
+
+
+
+		const layoutGridColumnSpan = Number(.layoutGridColumnSpan);
+		if (layoutGridColumnSpan >= 1 && layoutGridColumnSpan <= 12) {
+			return `col-span-${layoutGridColumnSpan}`;
+		}
+	}
+
 	/**
 	 * Set form object on mount
 	 */
@@ -103,7 +124,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			formFields
 		},
 		methods: {
-			onSubmitForm
+			onSubmitForm,
+			getFieldWidth
 		},
 		refs: {
 			formRef,

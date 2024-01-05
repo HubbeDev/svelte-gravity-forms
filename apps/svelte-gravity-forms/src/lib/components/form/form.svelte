@@ -10,7 +10,7 @@
 	/* 	export let formId: $$Props['formId'] = undefined; */
 
 	const {
-		methods: { onSubmitForm },
+		methods: { onSubmitForm, getFieldWidth },
 		states: { formSchema, formFields },
 		refs: { formRef }
 	} = getCtx();
@@ -33,35 +33,45 @@
 		: undefined;
 </script>
 
-{#if !form}
-	<p>Please provide a formId</p>
-{:else}
-	<Form.Root
-		asChild
-		method="POST"
-		{form}
-		controlled
-		schema={$formSchema}
-		let:enhance
-		let:attrs
-		let:config
-		{...$$restProps}
-	>
-		<form class="w-60" method="POST" bind:this={$formRef} use:enhance {...attrs}>
-			{#if $formFields}
-				{#each $formFields as field}
-					<Form.Field {config} name={`input_${field.id}`}>
-						<Form.Item>
-							<Form.Label>{field.label}</Form.Label>
-							<Form.Input placeholder={field.placeholder ?? ''} />
-							<Form.Description>{field.description}</Form.Description>
-							<Form.Validation />
-						</Form.Item>
-					</Form.Field>
-				{/each}
-			{/if}
+<div class="max-w-xl">
+	{#if !form}
+		<p>Please provide a formId</p>
+	{:else}
+		<Form.Root
+			asChild
+			method="POST"
+			{form}
+			controlled
+			schema={$formSchema}
+			let:enhance
+			let:attrs
+			let:config
+			{...$$restProps}
+		>
+			<form
+				class="grid grid-cols-12 gap-6"
+				method="POST"
+				bind:this={$formRef}
+				use:enhance
+				{...attrs}
+			>
+				{#if $formFields}
+					{#each $formFields as field}
+						<div class={getFieldWidth(field)}>
+							<Form.Field {config} name={`input_${field.id}`}>
+								<Form.Item>
+									<Form.Label>{field.label}</Form.Label>
+									<Form.Input placeholder={field.placeholder ?? ''} />
+									<Form.Description>{field.description}</Form.Description>
+									<Form.Validation />
+								</Form.Item>
+							</Form.Field>
+						</div>
+					{/each}
+				{/if}
 
-			<GFButton type="submit">Submit</GFButton>
-		</form>
-	</Form.Root>
-{/if}
+				<GFButton type="submit">Submit</GFButton>
+			</form>
+		</Form.Root>
+	{/if}
+</div>
