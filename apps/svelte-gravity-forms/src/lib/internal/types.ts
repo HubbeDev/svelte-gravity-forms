@@ -69,6 +69,8 @@ export type GFFormObjectProps = {
 	date_updated?: string;
 	is_active?: boolean;
 	is_trash?: boolean;
+	labelPlacement?: string;
+	requiredIndicator?: string;
 	version?: string;
 	fields?: GFFieldsProps[];
 	button?: GFButtonProps[];

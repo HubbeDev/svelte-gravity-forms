@@ -7,12 +7,13 @@ import type {
 	Events as ButtonEvents
 } from '$components/ui/button/index.js';
 
-type Props = {
+type Props = ButtonProps & {
 	buttonType?: ButtonType;
 	type?: string;
 	text?: string;
 	imageUrl?: string;
 	width?: string;
+	size?: string;
 	location?: string;
 	layoutGridColumnSpan?: number;
 	id?: string;

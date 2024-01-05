@@ -10,8 +10,9 @@
 	/* 	export let formId: $$Props['formId'] = undefined; */
 
 	const {
-		methods: { onSubmitForm, getFieldWidth },
-		states: { formSchema, formFields },
+		methods: { onSubmitForm },
+		helpers: { getFieldColSpan, showFieldLabel },
+		states: { formSchema, formFields, formRequiredIndicator },
 		refs: { formRef }
 	} = getCtx();
 
@@ -33,7 +34,7 @@
 		: undefined;
 </script>
 
-<div class="max-w-xl">
+<div class="">
 	{#if !form}
 		<p>Please provide a formId</p>
 	{:else}
@@ -49,20 +50,57 @@
 			{...$$restProps}
 		>
 			<form
-				class="grid grid-cols-12 gap-6"
+				class="grid w-full max-w-xl grid-cols-12 gap-x-6"
 				method="POST"
 				bind:this={$formRef}
 				use:enhance
 				{...attrs}
 			>
 				{#if $formFields}
-					{#each $formFields as field}
-						<div class={getFieldWidth(field)}>
+					{#each $formFields as field, i}
+						<div data-svelte-gf-field-id={i} class={getFieldColSpan(field)}>
 							<Form.Field {config} name={`input_${field.id}`}>
 								<Form.Item>
-									<Form.Label>{field.label}</Form.Label>
-									<Form.Input placeholder={field.placeholder ?? ''} />
-									<Form.Description>{field.description}</Form.Description>
+									{#if field.label && showFieldLabel(field.labelPlacement, 'above')}
+										<Form.Label>
+											{field.label}
+											{#if field.isRequired}
+												{#if $formRequiredIndicator == 'asterisk'}
+													<span class="text-red-600">*</span>
+												{:else if $formRequiredIndicator == 'text'}
+													<span class="text-muted-foreground text-xs"> (required)</span>
+												{/if}
+											{/if}
+										</Form.Label>
+										{#if field.description && field.descriptionPlacement == 'above'}
+											<Form.Description>{field.description}</Form.Description>
+										{/if}
+
+										<Form.Input
+											value={field.defaultValue ?? undefined}
+											placeholder={field.placeholder ?? ''}
+										/>
+										{#if field.label && showFieldLabel(field.labelPlacement, 'below')}
+											<Form.Description>{field.description}</Form.Description>
+										{/if}
+									{/if}
+									<!-- {#if field.label && showFieldLabel(field.labelPlacement, 'left')}
+										<div class="flex items-center gap-2">
+											<Form.Label>{field.label}</Form.Label>
+											{#if field.description && field.descriptionPlacement == 'above'}
+												<Form.Description>{field.description}</Form.Description>
+											{/if}
+											<div>
+												<Form.Input
+													value={field.defaultValue ?? undefined}
+													placeholder={field.placeholder ?? ''}
+												/>
+											</div>
+										</div>
+										{#if field.label && showFieldLabel(field.labelPlacement, 'below')}
+											<Form.Description>{field.description}</Form.Description>
+										{/if}
+									{/if} -->
 									<Form.Validation />
 								</Form.Item>
 							</Form.Field>
@@ -70,7 +108,7 @@
 					{/each}
 				{/if}
 
-				<GFButton type="submit">Submit</GFButton>
+				<GFButton class="col-span-12 mt-4" size="lg" type="submit">Submit</GFButton>
 			</form>
 		</Form.Root>
 	{/if}

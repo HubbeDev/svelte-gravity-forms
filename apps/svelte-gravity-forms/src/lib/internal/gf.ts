@@ -39,6 +39,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const formFields = writable<GFFieldsProps[]>(undefined);
 	const formIdStore = writable(withDefaults.formId);
 	const formSchema = writable<AnyZodObject>();
+	const formRequiredIndicator = writable<string>(undefined);
 
 	/**
 	 *  Get form object from Gravity Forms API
@@ -56,27 +57,80 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		console.log('onSubmitForm', formData);
 	}
 
-	function getFieldWidth(field: GFFieldsProps) {
+	function getFieldColSpan(field: GFFieldsProps) {
 		const layoutGridColumnSpan = Number(field.layoutGridColumnSpan);
 		if (layoutGridColumnSpan >= 1 && layoutGridColumnSpan <= 12) {
 			return `col-span-${layoutGridColumnSpan}`;
 		}
 	}
 
-	function getSubmitButtonWidth(formObject: GFFormObjectProps) {
-		const buttons = formObject.button || [];
-		if (buttons.length === 0) {
+	function getButtonColSpan(formObject: GFFormObjectProps, buttonID: string | undefined) {
+		if (!buttonID) {
 			return;
 		}
 
+		const buttons = formObject.button || [];
+		const button = buttons.find((button) => button.id === buttonID);
+		if (!button) {
+			return;
+		}
 
-
-		const layoutGridColumnSpan = Number(.layoutGridColumnSpan);
+		const layoutGridColumnSpan = Number(button.layoutGridColumnSpan);
 		if (layoutGridColumnSpan >= 1 && layoutGridColumnSpan <= 12) {
 			return `col-span-${layoutGridColumnSpan}`;
 		}
 	}
 
+	function showFieldLabel(fieldLabelPlacement: string | undefined, position = 'above') {
+		const formData = get(formObject);
+
+		if (fieldLabelPlacement === 'hidden_label') {
+			return false;
+		}
+		if (fieldLabelPlacement === '') {
+			const formDefaultLabelPlacement = formData?.labelPlacement;
+			let defaultPos = 'top_label';
+			if (position === 'above') {
+				defaultPos = 'top_label';
+			}
+			if (position === 'left') {
+				defaultPos = 'left_label';
+			}
+			if (position === 'right') {
+				defaultPos = 'right_label';
+			}
+			return formDefaultLabelPlacement === defaultPos;
+		}
+
+		return fieldLabelPlacement === position;
+	}
+
+	/**
+	 *  Get required indicator type from form object
+	 *  TODO: add support for custom text
+	 */
+	/* function getRequiredIndicatorType(): string {
+		const formData = get(formObject);
+		if (!formData || !formData.requiredIndicator) {
+			return;
+		}
+		return formData.requiredIndicator;
+	} */
+
+	/* function getButtonWidth(formObject: GFFormObjectProps, buttonID: string | undefined) {
+		if (!buttonID) {
+			return;
+		}
+
+		const buttons = formObject.button || [];
+		const button = buttons.find((button) => button.id === buttonID);
+		if (!button) {
+			return;
+		}
+
+		return 'w-' + button.width;
+	}
+ */
 	/**
 	 * Set form object on mount
 	 */
@@ -89,22 +143,27 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 		if (formData && formData.fields) {
 			formFields.set(formData.fields);
-
+			formRequiredIndicator.set(formData.requiredIndicator);
+			console.log('formData', formData);
 			const fieldsForSchema = formData.fields.map((field) => {
-				console.log('field', field);
 				const name = `input_${field.id}`;
+				console.log('name', name);
+				console.log('field', field);
 
 				let fieldType = z.string();
 				if (field.isRequired) {
-					fieldType = fieldType.min(1, 'This field is required');
+					fieldType = fieldType.min(1, `${field.label} is required`);
 				}
-				if (field.maxLength) {
-					fieldType = fieldType.max(Number(field.maxLength));
+				if (field.maxLength && Number(field.maxLength) > 0) {
+					fieldType = fieldType.max(
+						Number(field.maxLength),
+						`${field.label} is too long (max ${field.maxLength} characters)`
+					);
 				}
 
 				return {
 					name,
-					fieldType: z.string().min(3).max(10)
+					fieldType: fieldType
 				};
 			});
 
@@ -121,11 +180,18 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			formSchema,
 			formIdStore,
 			formObject,
-			formFields
+			formFields,
+			formRequiredIndicator
 		},
 		methods: {
-			onSubmitForm,
-			getFieldWidth
+			onSubmitForm
+		},
+		helpers: {
+			getFieldColSpan,
+			getButtonColSpan,
+			showFieldLabel
+			/* 			getRequiredIndicatorType */
+			/* 			getButtonWidth */
 		},
 		refs: {
 			formRef,
