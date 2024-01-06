@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { GFForm } from '$components/index.js';
 	import type { Props } from './types.js';
-	import { setCtx } from '../ctx.js';
+	import { getCtx, setCtx } from '../ctx.js';
 
 	type $$Props = Props;
 
@@ -10,6 +10,13 @@
 	setCtx({
 		formId: formId
 	});
+
+	const {
+		states: { formObject }
+	} = getCtx();
 </script>
 
 <GFForm bind:formId />
+<div class="text-center">
+	<pre>{JSON.stringify($formObject, null, 2)}</pre>
+</div>

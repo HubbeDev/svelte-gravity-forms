@@ -14,9 +14,9 @@
 	export let size: $$Props['size'] = 'default';
 
 	const {
-		states: { formObject },
+		states: { formObject, formSubmtiButton },
 		refs: { submitButtonRef },
-		helpers: { getButtonColSpan }
+		helpers: { getButtonColSpan, getSubmitBtnData }
 	} = getCtx();
 
 	export { className as class };
@@ -34,5 +34,9 @@
 	on:click
 	on:keydown
 >
-	<slot />
+	{#if $formSubmtiButton}
+		{$formSubmtiButton.text}
+	{:else}
+		<slot />
+	{/if}
 </Button>
