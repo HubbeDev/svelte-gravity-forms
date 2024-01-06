@@ -44,7 +44,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	}
 
 	// Handle form submission
-	async function onSubmitForm(formData: unknown) {
+	async function onSubmitForm(_formData: unknown) {
 		//console.log('onSubmitForm', formData);
 	}
 
