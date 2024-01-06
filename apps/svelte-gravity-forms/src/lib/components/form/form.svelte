@@ -6,7 +6,7 @@
 
 	const {
 		methods: { onSubmitForm },
-		helpers: { getFieldColSpan, showFieldLabel },
+		helpers: { getColumnSpan, showFieldLabel },
 		states: { formSchema, formFields, formRequiredIndicator },
 		refs: { formRef }
 	} = getCtx();
@@ -52,7 +52,7 @@
 		>
 			{#if $formFields}
 				{#each $formFields as field, i}
-					<div data-svelte-gf-field-id={i} class={getFieldColSpan(field)}>
+					<div data-svelte-gf-field-id={i} class={getColumnSpan(field.layoutGridColumnSpan)}>
 						<Form.Field {config} name={`input_${field.id}`}>
 							<Form.Item>
 								{#if field.label && showFieldLabel(field.labelPlacement, 'above')}
