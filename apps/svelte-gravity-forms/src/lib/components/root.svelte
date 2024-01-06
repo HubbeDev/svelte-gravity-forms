@@ -71,7 +71,7 @@
 											{#if $formRequiredIndicator == 'asterisk'}
 												<span class="text-red-600">*</span>
 											{:else if $formRequiredIndicator == 'text'}
-												<span class="text-muted-foreground text-xs"> (required)</span>
+												<span class="text-xs text-muted-foreground"> (required)</span>
 											{/if}
 										{/if}
 									</GFform.Label>
