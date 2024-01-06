@@ -1,9 +1,8 @@
 <script lang="ts">
+	import { superForm, superValidateSync } from 'sveltekit-superforms/client';
+	import * as GFform from '$lib/components/form/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
-	import * as GFform from '$lib/components/form/index.js';
-	import { GFButton } from '$components/index.js';
-	import { superForm, superValidateSync } from 'sveltekit-superforms/client';
 
 	type $$Props = Props;
 
