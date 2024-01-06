@@ -3,11 +3,14 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"dev": "npm run dev:wordpress && turbo run dev",
+		"dev": "pnpm run dev:wordpress && turbo run dev",
 		"dev:wordpress": "cd apps/wp && pnpm run dev && cd ../../",
+		"check": "turbo --filter run check",
+		"check:watch": "turbo --filter run check:watch",
 		"lint": "turbo run lint",
 		"format": "prettier --write .",
-		"setup": "chmod +x setup.sh && ./setup.sh"
+		"setup": "chmod +x setup.sh && ./setup.sh",
+		"changeset": "changeset"
 	},
 	"devDependencies": {
 		"eslint": "^8.54.0",

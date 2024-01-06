@@ -41,7 +41,7 @@ export type GFFieldsProps = {
 	disableQuantity?: boolean;
 	displayAllCategories?: boolean;
 	useRichTextEditor?: boolean;
-	errors?: any[];
+	errors?: unknown[];
 	checkboxLabel?: string;
 	pageNumber?: number;
 	fields?: string;
@@ -73,6 +73,7 @@ export type GFFormObjectProps = {
 	requiredIndicator?: string;
 	version?: string;
 	fields?: GFFieldsProps[];
+<<<<<<< HEAD
 	button?: GFButtonProps;
 	notifications?: any[];
 	confirmations?: any[];
@@ -81,5 +82,15 @@ export type GFFormObjectProps = {
 	personalData?: any[];
 	pagination?: any[];
 	lastPageButton?: any[];
+=======
+	button?: GFButtonProps[];
+	notifications?: unknown[];
+	confirmations?: unknown[];
+	confirmation?: unknown[];
+	save?: unknown[];
+	personalData?: unknown[];
+	pagination?: unknown[];
+	lastPageButton?: unknown[];
+>>>>>>> 59ce665119dafc1f27ee69ad0dafa625e144a5d1
 	nextFieldId?: number;
 };
