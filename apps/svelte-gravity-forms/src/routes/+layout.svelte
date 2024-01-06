@@ -2,6 +2,6 @@
 	import '../app.pcss';
 </script>
 
-<div class="flex h-screen w-screen flex-row items-center justify-center">
+<div class="flex w-screen flex-col items-center justify-center py-40">
 	<slot />
 </div>

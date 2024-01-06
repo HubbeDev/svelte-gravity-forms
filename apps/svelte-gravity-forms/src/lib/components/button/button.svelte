@@ -9,24 +9,24 @@
 
 	let className: $$Props['class'] = undefined;
 	export let buttonType: $$Props['buttonType'] = 'button';
-	export let id: $$Props['id'] = '';
 	export let width: $$Props['width'] = 'full';
 	export let size: $$Props['size'] = 'default';
 
 	const {
-		states: { formObject },
+		states: { formSubmtiButton },
 		refs: { submitButtonRef },
-		helpers: { getButtonColSpan }
+		helpers: { getButtonWidth }
 	} = getCtx();
 
 	export { className as class };
 
 	// join width with other classes
 	$: width = width ? `w-${width}` : '';
+	$: className = $formSubmtiButton ? cn(getButtonWidth($formSubmtiButton), className) : className;
 </script>
 
 <Button
-	class={cn(getButtonColSpan($formObject, id), className)}
+	class={cn('', className)}
 	{size}
 	bind:this={$submitButtonRef}
 	type={buttonType}
@@ -34,5 +34,11 @@
 	on:click
 	on:keydown
 >
-	<slot />
+	{#if $formSubmtiButton?.text}
+		{$formSubmtiButton.text}
+	{:else if $formSubmtiButton?.imageUrl}
+		<img src={$formSubmtiButton.imageUrl} alt="" width="20" height="20" class="h-5 w-5" />
+	{:else}
+		Submit
+	{/if}
 </Button>

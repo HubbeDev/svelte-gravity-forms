@@ -52,8 +52,8 @@ export type GFButtonProps = {
 	text?: string;
 	imageUrl?: string;
 	conditionalLogic?: null;
-	width?: 'auto';
-	location?: 'bottom';
+	width?: 'auto' | 'full';
+	location?: 'bottom' | 'inline';
 	layoutGridColumnSpan?: number;
 	id?: string;
 };
@@ -73,7 +73,7 @@ export type GFFormObjectProps = {
 	requiredIndicator?: string;
 	version?: string;
 	fields?: GFFieldsProps[];
-	button?: GFButtonProps[];
+	button?: GFButtonProps;
 	notifications?: unknown[];
 	confirmations?: unknown[];
 	confirmation?: unknown[];
