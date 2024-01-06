@@ -56,15 +56,6 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		}
 	}
 
-	// Calculate column span for a button
-	// ! don't think this is needed anymore
-	function getButtonColSpan(button: GFButtonProps) {
-		const layoutGridColumnSpan = Number(button.layoutGridColumnSpan);
-		if (layoutGridColumnSpan >= 1 && layoutGridColumnSpan <= 12) {
-			return `col-span-${layoutGridColumnSpan}`;
-		}
-	}
-
 	function getButtonWidth(button: GFButtonProps) {
 		if (button.location) {
 			if (button.location === 'inline') {
@@ -196,7 +187,6 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		},
 		helpers: {
 			getFieldColSpan,
-			getButtonColSpan,
 			showFieldLabel,
 			getButtonWidth
 		},
