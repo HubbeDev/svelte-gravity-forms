@@ -29,7 +29,7 @@ export type GFFieldsProps = {
 	choices?: string;
 	conditionalLogic?: string;
 	productField?: string;
-	layoutGridColumnSpan?: string;
+	layoutGridColumnSpan?: number;
 	enablePasswordInput?: boolean;
 	enableEnhancedUI?: number;
 	layoutGroupId?: string;
