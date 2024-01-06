@@ -52,8 +52,8 @@ export type GFButtonProps = {
 	text?: string;
 	imageUrl?: string;
 	conditionalLogic?: null;
-	width?: 'auto';
-	location?: 'bottom';
+	width?: 'auto' | 'full';
+	location?: 'bottom' | 'inline';
 	layoutGridColumnSpan?: number;
 	id?: string;
 };

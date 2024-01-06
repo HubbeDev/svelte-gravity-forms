@@ -57,19 +57,30 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	}
 
 	// Calculate column span for a button
-	function getButtonColSpan(formObject: GFFormObjectProps, buttonID: string | undefined) {
-		if (!buttonID) {
-			return;
-		}
-
-		const button = formObject.button;
-		if (!button) {
-			return;
-		}
+	// ! don't think this is needed anymore
+	function getButtonColSpan(button: GFButtonProps) {
 		const layoutGridColumnSpan = Number(button.layoutGridColumnSpan);
 		if (layoutGridColumnSpan >= 1 && layoutGridColumnSpan <= 12) {
 			return `col-span-${layoutGridColumnSpan}`;
 		}
+	}
+
+	function getButtonWidth(button: GFButtonProps) {
+		if (button.location) {
+			if (button.location === 'inline') {
+				return 'col-span-6';
+			}
+		}
+
+		if (button.width) {
+			if (button.width === 'full') {
+				return 'col-span-12';
+			}
+			if (button.width === 'auto') {
+				return 'w-auto';
+			}
+		}
+		return 'col-span-12';
 	}
 
 	// Determine whether to show field label
@@ -157,6 +168,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 				return;
 			}
 			if ($formObject.button) {
+				console.log('set submit button', $formObject.button);
 				formSubmtiButton.set($formObject.button);
 			}
 		}
@@ -186,7 +198,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		helpers: {
 			getFieldColSpan,
 			getButtonColSpan,
-			showFieldLabel
+			showFieldLabel,
+			getButtonWidth
 		},
 		refs: {
 			formRef,

@@ -16,17 +16,18 @@
 	const {
 		states: { formObject, formSubmtiButton },
 		refs: { submitButtonRef },
-		helpers: { getButtonColSpan, getSubmitBtnData }
+		helpers: { getButtonWidth }
 	} = getCtx();
 
 	export { className as class };
 
 	// join width with other classes
 	$: width = width ? `w-${width}` : '';
+	$: className = $formSubmtiButton ? cn(getButtonWidth($formSubmtiButton), className) : className;
 </script>
 
 <Button
-	class={cn(getButtonColSpan($formObject, id), className)}
+	class={cn('', className)}
 	{size}
 	bind:this={$submitButtonRef}
 	type={buttonType}
@@ -34,9 +35,5 @@
 	on:click
 	on:keydown
 >
-	{#if $formSubmtiButton}
-		{$formSubmtiButton.text}
-	{:else}
-		<slot />
-	{/if}
+	<slot />
 </Button>

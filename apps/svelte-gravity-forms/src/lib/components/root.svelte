@@ -17,6 +17,6 @@
 </script>
 
 <GFForm bind:formId />
-<div class="text-center">
+<div class="max-w-lg bg-black p-2 text-left text-white">
 	<pre>{JSON.stringify($formObject, null, 2)}</pre>
 </div>

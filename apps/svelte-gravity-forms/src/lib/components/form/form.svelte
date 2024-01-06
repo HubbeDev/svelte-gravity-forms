@@ -12,7 +12,7 @@
 	const {
 		methods: { onSubmitForm },
 		helpers: { getFieldColSpan, showFieldLabel },
-		states: { formSchema, formFields, formRequiredIndicator },
+		states: { formSchema, formFields, formRequiredIndicator, formSubmtiButton },
 		refs: { formRef }
 	} = getCtx();
 
@@ -84,23 +84,7 @@
 											<Form.Description>{field.description}</Form.Description>
 										{/if}
 									{/if}
-									<!-- {#if field.label && showFieldLabel(field.labelPlacement, 'left')}
-										<div class="flex items-center gap-2">
-											<Form.Label>{field.label}</Form.Label>
-											{#if field.description && field.descriptionPlacement == 'above'}
-												<Form.Description>{field.description}</Form.Description>
-											{/if}
-											<div>
-												<Form.Input
-													value={field.defaultValue ?? undefined}
-													placeholder={field.placeholder ?? ''}
-												/>
-											</div>
-										</div>
-										{#if field.label && showFieldLabel(field.labelPlacement, 'below')}
-											<Form.Description>{field.description}</Form.Description>
-										{/if}
-									{/if} -->
+
 									<Form.Validation />
 								</Form.Item>
 							</Form.Field>
@@ -108,7 +92,13 @@
 					{/each}
 				{/if}
 
-				<GFButton class="col-span-12 mt-4" size="lg" type="submit">Submit</GFButton>
+				<GFButton size="lg" type="submit">
+					{#if $formSubmtiButton}
+						{$formSubmtiButton.text}
+					{:else}
+						Submit
+					{/if}
+				</GFButton>
 			</form>
 		</Form.Root>
 	{/if}
