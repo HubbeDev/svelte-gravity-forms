@@ -155,10 +155,24 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		if (!$formFields) {
 			return;
 		}
+
 		const fieldsForSchema = $formFields.map((field) => {
 			const name = `input_${field.id}`;
 
-			let fieldType = z.string();
+			let fieldType;
+
+			switch (field.type) {
+				case 'text':
+					fieldType = z.string();
+					break;
+				case 'textarea':
+					fieldType = z.string();
+					break;
+				default:
+					fieldType = z.string();
+					break;
+			}
+
 			if (field.isRequired) {
 				fieldType = fieldType.min(1, `${field.label} is required`);
 			}
