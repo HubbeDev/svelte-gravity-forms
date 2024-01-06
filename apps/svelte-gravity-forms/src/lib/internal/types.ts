@@ -73,16 +73,6 @@ export type GFFormObjectProps = {
 	requiredIndicator?: string;
 	version?: string;
 	fields?: GFFieldsProps[];
-<<<<<<< HEAD
-	button?: GFButtonProps;
-	notifications?: any[];
-	confirmations?: any[];
-	confirmation?: any[];
-	save?: any[];
-	personalData?: any[];
-	pagination?: any[];
-	lastPageButton?: any[];
-=======
 	button?: GFButtonProps[];
 	notifications?: unknown[];
 	confirmations?: unknown[];
@@ -91,6 +81,5 @@ export type GFFormObjectProps = {
 	personalData?: unknown[];
 	pagination?: unknown[];
 	lastPageButton?: unknown[];
->>>>>>> 59ce665119dafc1f27ee69ad0dafa625e144a5d1
 	nextFieldId?: number;
 };
