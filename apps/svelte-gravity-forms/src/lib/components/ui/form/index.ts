@@ -3,7 +3,7 @@ import * as RadioGroupComp from '$lib/components/ui/radio-group/index.js';
 import * as SelectComp from '$lib/components/ui/select/index.js';
 import type { Writable } from 'svelte/store';
 import Item from './form-item.svelte';
-import Input from './form-input.svelte';
+import { Input } from '$components/input/index.js';
 import Textarea from './form-textarea.svelte';
 import Description from './form-description.svelte';
 import Label from './form-label.svelte';

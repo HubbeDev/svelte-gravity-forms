@@ -52,7 +52,7 @@ export {
 	type Events,
 	type ButtonType,
 	//
-	Root as GFButton,
+	Root as Button,
 	type Props as ButtonProps,
 	type Events as ButtonEvents,
 	buttonVariants
