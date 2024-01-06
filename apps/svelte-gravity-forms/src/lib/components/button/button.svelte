@@ -9,12 +9,11 @@
 
 	let className: $$Props['class'] = undefined;
 	export let buttonType: $$Props['buttonType'] = 'button';
-	export let id: $$Props['id'] = '';
 	export let width: $$Props['width'] = 'full';
 	export let size: $$Props['size'] = 'default';
 
 	const {
-		states: { formObject, formSubmtiButton },
+		states: { formSubmtiButton },
 		refs: { submitButtonRef },
 		helpers: { getButtonWidth }
 	} = getCtx();
@@ -35,5 +34,11 @@
 	on:click
 	on:keydown
 >
-	<slot />
+	{#if $formSubmtiButton?.text}
+		{$formSubmtiButton.text}
+	{:else if $formSubmtiButton?.imageUrl}
+		<img src={$formSubmtiButton.imageUrl} alt="" width="20" height="20" class="h-5 w-5" />
+	{:else}
+		Submit
+	{/if}
 </Button>

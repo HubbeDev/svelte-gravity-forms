@@ -83,7 +83,7 @@
 					</div>
 				{/each}
 			{/if}
-			<GFButton class="col-span-12 mt-4" size="lg" type="submit">Submit</GFButton>
+			<GFButton class="col-span-12 mt-4" size="lg" type="submit"></GFButton>
 		</form>
 	</Form.Root>
 {/if}

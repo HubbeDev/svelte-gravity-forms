@@ -45,7 +45,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	// Handle form submission
 	async function onSubmitForm(formData: unknown) {
-		console.log('onSubmitForm', formData);
+		//console.log('onSubmitForm', formData);
 	}
 
 	// Calculate column span for a field
@@ -168,7 +168,6 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 				return;
 			}
 			if ($formObject.button) {
-				console.log('set submit button', $formObject.button);
 				formSubmtiButton.set($formObject.button);
 			}
 		}

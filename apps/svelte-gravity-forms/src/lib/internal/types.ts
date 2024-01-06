@@ -73,7 +73,7 @@ export type GFFormObjectProps = {
 	requiredIndicator?: string;
 	version?: string;
 	fields?: GFFieldsProps[];
-	button?: GFButtonProps[];
+	button?: GFButtonProps;
 	notifications?: unknown[];
 	confirmations?: unknown[];
 	confirmation?: unknown[];
