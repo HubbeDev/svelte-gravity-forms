@@ -1,15 +1,14 @@
 <script lang="ts">
-	import { SvelteGravityForm } from '$lib/index.js';
-	import {
-		PUBLIC_GF_API_URL,
-		PUBLIC_GF_CONSUMER_KEY,
-		PUBLIC_GF_CONSUMER_SECRECT
-	} from '$env/static/public';
 </script>
 
-<SvelteGravityForm
-	formId={1}
-	backendUrl={PUBLIC_GF_API_URL}
-	consumerKey={PUBLIC_GF_CONSUMER_KEY}
-	consumerSecret={PUBLIC_GF_CONSUMER_SECRECT}
-/>
+<h1 class="text-2xl">Svelte gravity forms</h1>
+
+<h3 class="mt-5 text-lg">Examples</h3>
+<ul class="mt-2 space-y-1">
+	<li>
+		<a href="/examples/client-side">Client side</a>
+	</li>
+	<li>
+		<a href="/examples/server-side">Server side</a>
+	</li>
+</ul>

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { superForm, superValidateSync } from 'sveltekit-superforms/client';
 	import * as GFform from '$lib/components/form/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
@@ -10,44 +9,32 @@
 	export let backendUrl: $$Props['backendUrl'] = undefined;
 	export let consumerKey: $$Props['consumerKey'] = undefined;
 	export let consumerSecret: $$Props['consumerSecret'] = undefined;
+	export let ssr: $$Props['ssr'] = true;
+	export let formData: $$Props['formData'] = undefined;
 
 	const {
-		methods: { onSubmitForm },
+		methods: { getSuperForm },
 		states: { formSchema, formFields, formObject, isSubmitted, comfirmationText },
 		refs: { formRef }
 	} = setCtx({
-		formId: formId,
+		formId: formData ? formData.id : formId,
 		backendUrl: backendUrl,
 		consumerKey: consumerKey,
-		consumerSecret: consumerSecret
+		consumerSecret: consumerSecret,
+		ssr: ssr,
+		formObject: formData
 	});
 
-	$: form = $formSchema
-		? superForm(superValidateSync($formSchema), {
-				SPA: true,
-				validators: $formSchema,
-				// Reset the form upon a successful result
-				applyAction: true,
-				invalidateAll: true,
-				resetForm: true,
-				async onUpdate({ form }) {
-					if (form.valid) {
-						if (!form.data) return;
-
-						await onSubmitForm(form.data);
-					}
-				}
-			})
-		: undefined;
+	$: superForm = $formSchema ? getSuperForm($formSchema) : undefined;
 </script>
 
-{#if !form}
+{#if !superForm}
 	<p>Please provide a formId</p>
 {:else}
 	<GFform.Root
 		asChild
 		method="POST"
-		{form}
+		form={superForm}
 		controlled
 		schema={$formSchema}
 		let:enhance
