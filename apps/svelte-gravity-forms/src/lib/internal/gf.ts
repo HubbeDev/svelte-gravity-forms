@@ -56,12 +56,12 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const formSubmtiButton = writable<GFButtonProps | undefined>(undefined);
 	const defaultConfirmation = writable<GFComfirmationProps>(undefined);
 	const isSubmitted = writable<boolean>(false);
+
 	const consumerKeyStore = writable(withDefaults.consumerKey);
 	const consumerSecretStore = writable(withDefaults.consumerSecret);
 
-	// Fetch form object from Gravity Forms API
 
-	// Handle form submission
+	// Fetch form object from Gravity Forms API
 	async function onSubmitForm(req: { [x: string]: unknown }) {
 		try {
 			const submit = await sendSubmission(req, backendUrl, formId);
