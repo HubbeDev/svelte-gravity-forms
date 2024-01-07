@@ -8,7 +8,8 @@
 
 	export let formId: $$Props['formId'] = undefined;
 	export let backendUrl: $$Props['backendUrl'] = undefined;
-	export let formUrl: $$Props['formUrl'] = 'svelte-gravityforms/v1/gf';
+	export let consumerKey: $$Props['consumerKey'] = undefined;
+	export let consumerSecret: $$Props['consumerSecret'] = undefined;
 
 	const {
 		methods: { onSubmitForm },
@@ -17,7 +18,8 @@
 	} = setCtx({
 		formId: formId,
 		backendUrl: backendUrl,
-		formUrl: formUrl
+		consumerKey: consumerKey,
+		consumerSecret: consumerSecret
 	});
 
 	$: form = $formSchema

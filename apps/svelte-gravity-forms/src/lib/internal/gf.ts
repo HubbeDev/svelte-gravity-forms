@@ -10,18 +10,21 @@ import type {
 	GFFormObjectProps
 } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
-import { getFormObject, sendSubmission } from './helpers/gf-rest.js';
+import { getClientFormObject, sendSubmission } from './helpers/gf-rest.js';
 
 export type CreateGravityFromsProps = {
 	formId?: number | undefined;
 	backendUrl?: string;
-	formUrl?: string;
+	consumerKey?: string;
+	consumerSecret?: string;
 };
 
 const defaultProps = {
 	formId: undefined,
 	backendUrl: 'http://localhost:8888/wp-json',
-	formUrl: 'svelte-gravityforms/v1/gf'
+	formObjectData: undefined,
+	consumerKey: undefined,
+	consumerSecret: undefined
 };
 
 export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
@@ -37,7 +40,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		})
 	);
 
-	const { formId, backendUrl, formUrl } = options;
+	const { formId, backendUrl } = options;
 
 	// refs
 	const formRef = writable<HTMLFormElement | undefined>(undefined);
@@ -53,6 +56,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const formSubmtiButton = writable<GFButtonProps | undefined>(undefined);
 	const defaultConfirmation = writable<GFComfirmationProps>(undefined);
 	const isSubmitted = writable<boolean>(false);
+	const consumerKeyStore = writable(withDefaults.consumerKey);
+	const consumerSecretStore = writable(withDefaults.consumerSecret);
 
 	// Fetch form object from Gravity Forms API
 
@@ -176,7 +181,12 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		if (!get(formIdStore)) {
 			return;
 		}
-		const formData = await getFormObject(backendUrl, formUrl, formIdStore);
+		const formData = await getClientFormObject(
+			backendUrl,
+			formIdStore,
+			consumerKeyStore,
+			consumerSecretStore
+		);
 		formObject.set(formData);
 	});
 
@@ -292,8 +302,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			isSubmitted,
 			defaultConfirmation,
 			formId,
-			backendUrl,
-			formUrl
+			backendUrl
 		},
 		methods: {
 			onSubmitForm
