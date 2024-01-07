@@ -1,5 +1,5 @@
 import { get, type Writable } from 'svelte/store';
-import type { GFFormObjectProps } from '../types.js';
+import type { GFFormObjectProps, GFSubmissionResponse } from '../types.js';
 
 import OAuth from 'oauth-1.0a';
 import CryptoJS from 'crypto-js';
@@ -14,9 +14,10 @@ export async function sendSubmission(
 		headers: {
 			Accept: 'application/json',
 			'Content-Type': 'application/json;charset=UTF-8'
-		}
+		},
+		body: JSON.stringify(req)
 	});
-	const data = await res.json();
+	const data = (await res.json()) as GFSubmissionResponse;
 	return data;
 }
 

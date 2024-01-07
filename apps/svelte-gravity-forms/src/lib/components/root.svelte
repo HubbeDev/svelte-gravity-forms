@@ -13,7 +13,7 @@
 
 	const {
 		methods: { onSubmitForm },
-		states: { formSchema, formFields, formObject, isSubmitted, defaultConfirmation },
+		states: { formSchema, formFields, formObject, isSubmitted, comfirmationText },
 		refs: { formRef }
 	} = setCtx({
 		formId: formId,
@@ -33,6 +33,7 @@
 				async onUpdate({ form }) {
 					if (form.valid) {
 						if (!form.data) return;
+
 						await onSubmitForm(form.data);
 					}
 				}
@@ -63,7 +64,7 @@
 		>
 			{#if $isSubmitted}
 				<div data-svelte-gf-confirmation class="col-span-12">
-					{@html $defaultConfirmation.message}
+					{@html $comfirmationText}
 				</div>
 			{:else}
 				{#if $formFields}

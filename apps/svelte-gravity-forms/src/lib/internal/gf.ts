@@ -3,12 +3,7 @@ import { get, writable } from 'svelte/store';
 import { z, type AnyZodObject } from 'zod';
 import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 
-import type {
-	GFButtonProps,
-	GFComfirmationProps,
-	GFFieldsProps,
-	GFFormObjectProps
-} from './types.js';
+import type { GFButtonProps, GFFieldsProps, GFFormObjectProps } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
 import { getClientFormObject, sendSubmission } from './helpers/gf-rest.js';
 
@@ -54,7 +49,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const formSchema = writable<AnyZodObject>();
 	const formRequiredIndicator = writable<string | undefined>(undefined);
 	const formSubmtiButton = writable<GFButtonProps | undefined>(undefined);
-	const defaultConfirmation = writable<GFComfirmationProps>(undefined);
+	const comfirmationText = writable<string>(undefined);
 	const isSubmitted = writable<boolean>(false);
 
 	const consumerKeyStore = writable(withDefaults.consumerKey);
@@ -63,13 +58,17 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	// Fetch form object from Gravity Forms API
 	async function onSubmitForm(req: { [x: string]: unknown }) {
 		try {
-			const submit = await sendSubmission(req, backendUrl, formId);
+			const resp = await sendSubmission(req, backendUrl, formId);
 
-			if (!submit.is_valid) {
-				throw new Error(submit.message);
+			if (!resp.is_valid) {
+				throw new Error(JSON.stringify(resp.validation_messages));
 			}
 
-			isSubmitted.set(true);
+			if (resp.confirmation_type === 'message' && resp.confirmation_message) {
+				comfirmationText.set(resp.confirmation_message);
+			}
+
+			isSubmitted.set(resp.is_valid);
 		} catch (err) {
 			// eslint-disable-next-line no-console
 			console.error(err);
@@ -201,28 +200,6 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		}
 	});
 
-	/**
-	 * set default confirmation on mount if exists in form object data
-	 */
-	effect([formObject], ([$formObject]) => {
-		if ($formObject) {
-			if (!$formObject.confirmations) {
-				return;
-			}
-
-			// find default confirmation by isDefault key
-			const defaultConfirmationObject = Object.values($formObject.confirmations).find(
-				(confirmation) => confirmation.isDefault
-			);
-
-			if (!defaultConfirmationObject) {
-				return;
-			}
-
-			defaultConfirmation.set(defaultConfirmationObject);
-		}
-	});
-
 	// Set form schema
 	effect([formFields], ([$formFields]) => {
 		if (!$formFields) {
@@ -299,7 +276,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			formRequiredIndicator,
 			formSubmtiButton,
 			isSubmitted,
-			defaultConfirmation,
+			comfirmationText,
 			formId,
 			backendUrl
 		},
