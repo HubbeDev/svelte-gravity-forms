@@ -60,7 +60,6 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const consumerKeyStore = writable(withDefaults.consumerKey);
 	const consumerSecretStore = writable(withDefaults.consumerSecret);
 
-
 	// Fetch form object from Gravity Forms API
 	async function onSubmitForm(req: { [x: string]: unknown }) {
 		try {
