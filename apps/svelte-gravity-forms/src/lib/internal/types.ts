@@ -1,6 +1,6 @@
 export type GFFieldsProps = {
 	type?: string;
-	id?: number;
+	id: number;
 	formId?: number;
 	label?: string;
 	adminLabel?: string;
@@ -58,6 +58,18 @@ export type GFButtonProps = {
 	id?: string;
 };
 
+type GFComfirmationProps = {
+	type?: string;
+	id?: string;
+	isDefault?: boolean;
+	message?: string;
+	name?: string;
+	disableAutoformat?: boolean;
+	pageId?: number;
+	url?: string;
+	queryString?: string;
+};
+
 /**
  * @todo: fix any types in this file
  */
@@ -75,11 +87,12 @@ export type GFFormObjectProps = {
 	fields?: GFFieldsProps[];
 	button?: GFButtonProps;
 	notifications?: unknown[];
-	confirmations?: unknown[];
+	confirmations?: GFComfirmationProps[];
 	confirmation?: unknown[];
 	save?: unknown[];
 	personalData?: unknown[];
 	pagination?: unknown[];
 	lastPageButton?: unknown[];
 	nextFieldId?: number;
+	descriptionPlacement?: string;
 };

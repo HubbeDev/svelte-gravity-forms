@@ -8,7 +8,7 @@
 
 	let className: $$Props['class'] = undefined;
 
-	export let fieldId: $$Props['fieldId'] = undefined;
+	export let fieldId: $$Props['fieldId'];
 	export let label: $$Props['label'] = undefined;
 	export let labelPosition: $$Props['labelPosition'] = undefined;
 	export let description: $$Props['description'] = undefined;
@@ -17,11 +17,12 @@
 	export let defaultValue: $$Props['defaultValue'] = undefined;
 	export let placeholder: $$Props['placeholder'] = undefined;
 	export let columnSpan: $$Props['columnSpan'] = undefined;
-	export let config: $$Props['config'] = undefined;
-	export let index: $$Props['fieldIndex'] = undefined;
+	export let index: $$Props['index'] = undefined;
+	export let config: $$Props['config'];
+	export let type: $$Props['type'] = undefined;
 
 	const {
-		helpers: { getColumnSpan, showFieldLabel },
+		helpers: { getColumnSpan, showFieldLabel, showDescription },
 		states: { formRequiredIndicator }
 	} = getCtx();
 
@@ -42,14 +43,24 @@
 						{/if}
 					{/if}
 				</GFform.Label>
-				{#if description && descriptionPosition == 'above'}
-					<GFform.Description>{description}</GFform.Description>
-				{/if}
-				<GFform.Input value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
-				{#if label && showFieldLabel(labelPosition, 'below')}
-					<GFform.Description>{description}</GFform.Description>
-				{/if}
 			{/if}
+
+			{#if description && showDescription(descriptionPosition, 'above')}
+				<GFform.Description>{description}</GFform.Description>
+			{/if}
+
+			{#if type === 'text'}
+				<GFform.Input value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
+			{:else if type === 'email'}
+				<GFform.Input type="email" value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
+			{:else if type === 'textarea'}
+				<GFform.Textarea value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
+			{/if}
+
+			{#if description && showDescription(descriptionPosition, 'below')}
+				<GFform.Description>{description}</GFform.Description>
+			{/if}
+
 			<GFform.Validation />
 		</GFform.Item>
 	</GFform.Field>

@@ -11,7 +11,7 @@
 	const {
 		methods: { onSubmitForm },
 
-		states: { formSchema, formFields, formObject },
+		states: { formSchema, formFields, formObject, isSubmitted, defaultConfirmation },
 		refs: { formRef }
 	} = setCtx({
 		formId: formId
@@ -56,23 +56,31 @@
 			use:enhance
 			{...attrs}
 		>
-			{#if $formFields}
-				{#each $formFields as field, i}
-					<GFform.FormField
-						fieldIndex={i}
-						label={field.label}
-						labelPosition={field.labelPlacement}
-						description={field.description}
-						descriptionPosition={field.descriptionPlacement}
-						fieldId={field.id}
-						isRequired={field.isRequired}
-						defaultValue={field.defaultValue}
-						columnSpan={field.layoutGridColumnSpan}
-						{config}
-					/>
-				{/each}
+			{#if $isSubmitted}
+				<div data-svelte-gf-confirmation class="col-span-12">
+					{@html $defaultConfirmation.message}
+				</div>
+			{:else}
+				{#if $formFields}
+					{#each $formFields as field, i}
+						<GFform.FormField
+							type={field.type}
+							index={i}
+							label={field.label}
+							labelPosition={field.labelPlacement}
+							description={field.description}
+							descriptionPosition={field.descriptionPlacement}
+							fieldId={field.id}
+							isRequired={field.isRequired}
+							defaultValue={field.defaultValue}
+							columnSpan={field.layoutGridColumnSpan}
+							placeholder={field.placeholder}
+							{config}
+						/>
+					{/each}
+				{/if}
+				<GFform.Button class="" size="lg" type="submit"></GFform.Button>
 			{/if}
-			<GFform.Button class="" size="lg" type="submit"></GFform.Button>
 		</form>
 	</GFform.Root>
 {/if}

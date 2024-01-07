@@ -1,9 +1,22 @@
 import Root from './field.svelte';
 import type { HTMLInputAttributes } from 'svelte/elements';
 import type { InputEvents } from '../input/index.js';
+import type { SuperForm } from 'sveltekit-superforms/client';
+import type { ZodValidation } from 'sveltekit-superforms';
+import type { AnyZodObject } from 'zod';
+
+export type Form<T extends FormValidation> = {
+	schema: T;
+	form: SuperForm<T>;
+};
+
+export type Arrayable<T> = T | T[];
+
+export type FormValidation = ZodValidation<AnyZodObject>;
 
 type Props = HTMLInputAttributes & {
-	fieldId?: number;
+	fieldId: number;
+	config: Form<FormValidation>;
 	label?: string;
 	labelPosition?: string;
 	description?: string;
@@ -12,8 +25,8 @@ type Props = HTMLInputAttributes & {
 	defaultValue?: string;
 	columnSpan?: number;
 	placeholder?: string;
-	config?: unknown;
-	fieldIndex?: number;
+	index?: number;
+	type?: string;
 };
 
 export {

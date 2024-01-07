@@ -4,7 +4,12 @@ import { PUBLIC_GF_API_URL } from '$env/static/public';
 import { z, type AnyZodObject } from 'zod';
 import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 
-import type { GFButtonProps, GFFieldsProps, GFFormObjectProps } from './types.js';
+import type {
+	GFButtonProps,
+	GFComfirmationProps,
+	GFFieldsProps,
+	GFFormObjectProps
+} from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
 
 export type CreateGravityFromsProps = {
@@ -35,6 +40,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const formSchema = writable<AnyZodObject>();
 	const formRequiredIndicator = writable<string | undefined>(undefined);
 	const formSubmtiButton = writable<GFButtonProps | undefined>(undefined);
+	const defaultConfirmation = writable<GFComfirmationProps>(undefined);
+	const isSubmitted = writable<boolean>(false);
 
 	// Fetch form object from Gravity Forms API
 	async function getFormObject(formId: number) {
@@ -45,7 +52,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	// Handle form submission
 	async function onSubmitForm(_formData: unknown) {
-		//console.log('onSubmitForm', formData);
+		isSubmitted.set(true);
 	}
 
 	// Calculate column span for a field
@@ -104,7 +111,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		return 'col-span-12';
 	}
 
-	// Determine whether to show field label
+	// Determines whether to show the field label based on the field label placement.
 	function showFieldLabel(fieldLabelPlacement: string | undefined, position = 'above') {
 		const formData = get(formObject);
 
@@ -129,6 +136,24 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		return fieldLabelPlacement === position;
 	}
 
+	/**
+	 * Determines whether to show the description based on the field description placement.
+	 */
+	function showDescription(
+		fieldDescriptionPlacement: string | undefined,
+		position = 'above'
+	): boolean {
+		const formData = get(formObject);
+		const defaultPlacement = formData?.descriptionPlacement;
+
+		// Use the default placement if fieldDescriptionPlacement is an empty string
+		fieldDescriptionPlacement =
+			fieldDescriptionPlacement === '' ? defaultPlacement : fieldDescriptionPlacement;
+
+		// Return true if the field description placement matches the position
+		return fieldDescriptionPlacement === position;
+	}
+
 	// Fetch and set form object on mount
 	onMount(async () => {
 		if (!get(formIdStore)) {
@@ -147,6 +172,28 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 				return;
 			}
 			formFields.set($formObject.fields);
+		}
+	});
+
+	/**
+	 * set default confirmation on mount if exists in form object data
+	 */
+	effect([formObject], ([$formObject]) => {
+		if ($formObject) {
+			if (!$formObject.confirmations) {
+				return;
+			}
+
+			// find default confirmation by isDefault key
+			const defaultConfirmationObject = Object.values($formObject.confirmations).find(
+				(confirmation) => confirmation.isDefault
+			);
+
+			if (!defaultConfirmationObject) {
+				return;
+			}
+
+			defaultConfirmation.set(defaultConfirmationObject);
 		}
 	});
 
@@ -224,7 +271,9 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			formObject,
 			formFields,
 			formRequiredIndicator,
-			formSubmtiButton
+			formSubmtiButton,
+			isSubmitted,
+			defaultConfirmation
 		},
 		methods: {
 			onSubmitForm
@@ -232,7 +281,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		helpers: {
 			getColumnSpan,
 			showFieldLabel,
-			getButtonWidth
+			getButtonWidth,
+			showDescription
 		},
 		refs: {
 			formRef,

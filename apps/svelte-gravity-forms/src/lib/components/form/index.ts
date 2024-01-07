@@ -3,6 +3,7 @@ import * as RadioGroupComp from '$lib/components/ui/radio-group/index.js';
 import * as SelectComp from '$lib/components/ui/select/index.js';
 import { Item } from '$components/item/index.js';
 import { Input } from '$components/input/index.js';
+import { Textarea } from '$components/textarea/index.js';
 import { Description } from '$components/description/index.js';
 import { Label } from '$components/label/index.js';
 import { Validation } from '$components/validation/index.js';
@@ -31,6 +32,7 @@ export {
 	Control,
 	Item,
 	Input,
+	Textarea,
 	Label,
 	Button,
 	Validation,
@@ -49,6 +51,7 @@ export {
 	Control as FormControl,
 	Item as FormItem,
 	Input as FormInput,
+	Textarea as FormTextarea,
 	Description as FormDescription,
 	Label as FormLabel,
 	Validation as FormValidation,
