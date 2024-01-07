@@ -1,3 +1,5 @@
 export type Props = {
-	formId?: number;
+	formId: number | undefined;
+	backendUrl: string | undefined;
+	formUrl?: string;
 };

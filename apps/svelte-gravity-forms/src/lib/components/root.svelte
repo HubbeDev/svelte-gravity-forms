@@ -7,14 +7,17 @@
 	type $$Props = Props;
 
 	export let formId: $$Props['formId'] = undefined;
+	export let backendUrl: $$Props['backendUrl'] = undefined;
+	export let formUrl: $$Props['formUrl'] = 'svelte-gravityforms/v1/gf';
 
 	const {
 		methods: { onSubmitForm },
-
 		states: { formSchema, formFields, formObject, isSubmitted, defaultConfirmation },
 		refs: { formRef }
 	} = setCtx({
-		formId: formId
+		formId: formId,
+		backendUrl: backendUrl,
+		formUrl: formUrl
 	});
 
 	$: form = $formSchema
