@@ -6,7 +6,7 @@
 	type $$Props = Props;
 	type $$Events = InputEvents;
 
-	let className: $$Props['class'] = undefined;
+	/* let className: $$Props['class'] = undefined; */
 
 	export let fieldId: $$Props['fieldId'];
 	export let label: $$Props['label'] = undefined;
@@ -39,7 +39,7 @@
 						{#if $formRequiredIndicator == 'asterisk'}
 							<span class="text-red-600">*</span>
 						{:else if $formRequiredIndicator == 'text'}
-							<span class="text-muted-foreground text-xs"> (required)</span>
+							<span class="text-xs text-muted-foreground"> (required)</span>
 						{/if}
 					{/if}
 				</GFform.Label>
@@ -52,7 +52,11 @@
 			{#if type === 'text'}
 				<GFform.Input value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
 			{:else if type === 'email'}
-				<GFform.Input type="email" value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
+				<GFform.Input
+					type="email"
+					value={defaultValue ?? undefined}
+					placeholder={placeholder ?? ''}
+				/>
 			{:else if type === 'textarea'}
 				<GFform.Textarea value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
 			{/if}
