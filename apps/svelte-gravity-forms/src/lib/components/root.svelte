@@ -10,8 +10,8 @@
 
 	const {
 		methods: { onSubmitForm },
-		helpers: { getColumnSpan, showFieldLabel },
-		states: { formSchema, formFields, formRequiredIndicator, formObject },
+
+		states: { formSchema, formFields, formObject, isSubmitted, defaultConfirmation },
 		refs: { formRef }
 	} = setCtx({
 		formId: formId
@@ -56,43 +56,31 @@
 			use:enhance
 			{...attrs}
 		>
-			{#if $formFields}
-				{#each $formFields as field, i}
-					<div
-						data-svelte-gf-field-id={i}
-						class={field.layoutGridColumnSpan ? getColumnSpan(field.layoutGridColumnSpan) : ''}
-					>
-						<GFform.Field {config} name={`input_${field.id}`}>
-							<GFform.Item>
-								{#if field.label && showFieldLabel(field.labelPlacement, 'above')}
-									<GFform.Label>
-										{field.label}
-										{#if field.isRequired}
-											{#if $formRequiredIndicator == 'asterisk'}
-												<span class="text-red-600">*</span>
-											{:else if $formRequiredIndicator == 'text'}
-												<span class="text-xs text-muted-foreground"> (required)</span>
-											{/if}
-										{/if}
-									</GFform.Label>
-									{#if field.description && field.descriptionPlacement == 'above'}
-										<GFform.Description>{field.description}</GFform.Description>
-									{/if}
-									<GFform.Input
-										value={field.defaultValue ?? undefined}
-										placeholder={field.placeholder ?? ''}
-									/>
-									{#if field.label && showFieldLabel(field.labelPlacement, 'below')}
-										<GFform.Description>{field.description}</GFform.Description>
-									{/if}
-								{/if}
-								<GFform.Validation />
-							</GFform.Item>
-						</GFform.Field>
-					</div>
-				{/each}
+			{#if $isSubmitted}
+				<div data-svelte-gf-confirmation class="col-span-12">
+					{@html $defaultConfirmation.message}
+				</div>
+			{:else}
+				{#if $formFields}
+					{#each $formFields as field, i}
+						<GFform.FormField
+							type={field.type}
+							index={i}
+							label={field.label}
+							labelPosition={field.labelPlacement}
+							description={field.description}
+							descriptionPosition={field.descriptionPlacement}
+							fieldId={field.id}
+							isRequired={field.isRequired}
+							defaultValue={field.defaultValue}
+							columnSpan={field.layoutGridColumnSpan}
+							placeholder={field.placeholder}
+							{config}
+						/>
+					{/each}
+				{/if}
+				<GFform.Button class="" size="lg" type="submit"></GFform.Button>
 			{/if}
-			<GFform.Button class="" size="lg" type="submit"></GFform.Button>
 		</form>
 	</GFform.Root>
 {/if}
