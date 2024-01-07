@@ -1,4 +1,4 @@
-import { get, type Writable } from 'svelte/store';
+import { get, writable, type Writable } from 'svelte/store';
 import type { GFFormObjectProps, GFSubmissionResponse } from '../types.js';
 
 import OAuth from 'oauth-1.0a';
@@ -21,7 +21,7 @@ export async function sendSubmission(
 	return data;
 }
 
-export async function getClientFormObject(
+export async function fetchGFForm(
 	backendUrl: Writable<string | undefined>,
 	formId: Writable<number>,
 	consumer_key: Writable<string>,
@@ -62,4 +62,28 @@ export async function getClientFormObject(
 	console.log(res);
 	const data = (await res.json()) as GFFormObjectProps;
 	return data;
+}
+
+/**
+ *
+ */
+export async function getGFFormData(
+	backendUrl: string,
+	formId: number,
+	consumer_key: string,
+	consumer_secret: string
+) {
+	const backendUrlStore = writable(backendUrl);
+	const formIdStore = writable(formId);
+	const consumer_keyStore = writable(consumer_key);
+	const consumer_secretStore = writable(consumer_secret);
+
+	const formObject = fetchGFForm(
+		backendUrlStore,
+		formIdStore,
+		consumer_keyStore,
+		consumer_secretStore
+	);
+
+	return formObject;
 }

@@ -1,25 +1,35 @@
 import { onMount } from 'svelte';
 import { get, writable } from 'svelte/store';
-import { z, type AnyZodObject } from 'zod';
+import { type AnyZodObject } from 'zod';
 import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 
 import type { GFButtonProps, GFFieldsProps, GFFormObjectProps } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
-import { getClientFormObject, sendSubmission } from './helpers/gf-rest.js';
+import { fetchGFForm, sendSubmission } from './helpers/gf-rest.js';
+import { generateFormSchema } from './helpers/schema.js';
+import { superForm, superValidateSync } from 'sveltekit-superforms/client';
+import type { SuperValidated } from 'sveltekit-superforms';
 
 export type CreateGravityFromsProps = {
 	formId?: number | undefined;
 	backendUrl?: string;
 	consumerKey?: string;
 	consumerSecret?: string;
+	ssr?: boolean;
+	schema?: AnyZodObject | undefined;
+	formObject?: GFFormObjectProps;
 };
 
 const defaultProps = {
 	formId: undefined,
 	backendUrl: 'http://localhost:8888/wp-json',
-	formObjectData: undefined,
+	formObject: undefined,
 	consumerKey: undefined,
-	consumerSecret: undefined
+	consumerSecret: undefined,
+	ssr: true,
+	schema: undefined,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	form: undefined
 };
 
 export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
@@ -35,7 +45,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		})
 	);
 
-	const { formId, backendUrl } = options;
+	const { formId, backendUrl, ssr } = options;
 
 	// refs
 	const formRef = writable<HTMLFormElement | undefined>(undefined);
@@ -43,9 +53,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	// states
 
-	const formObject = writable<GFFormObjectProps>(undefined);
 	const formFields = writable<GFFieldsProps[]>(undefined);
-	const formIdStore = writable(withDefaults.formId);
+	const formObject = writable(withDefaults.formObject);
 	const formSchema = writable<AnyZodObject>();
 	const formRequiredIndicator = writable<string | undefined>(undefined);
 	const formSubmtiButton = writable<GFButtonProps | undefined>(undefined);
@@ -54,6 +63,28 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	const consumerKeyStore = writable(withDefaults.consumerKey);
 	const consumerSecretStore = writable(withDefaults.consumerSecret);
+
+	function getClientSidesuperForm(schema: AnyZodObject) {
+		if (!schema) return;
+		return superForm(superValidateSync(schema), {
+			SPA: true,
+			validators: schema,
+			// Reset the form upon a successful result
+			applyAction: true,
+			invalidateAll: true,
+			resetForm: true,
+			async onUpdate({ form }) {
+				if (form.valid) {
+					if (!form.data) return;
+					await onSubmitForm(form.data);
+				}
+			}
+		});
+	}
+
+	function getServerSideSuperForm(form: SuperValidated<AnyZodObject>) {
+		return form;
+	}
 
 	// Fetch form object from Gravity Forms API
 	async function onSubmitForm(req: { [x: string]: unknown }) {
@@ -176,16 +207,14 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	// Fetch and set form object on mount
 	onMount(async () => {
-		if (!get(formIdStore)) {
+		if (!get(formId)) {
 			return;
 		}
-		const formData = await getClientFormObject(
-			backendUrl,
-			formIdStore,
-			consumerKeyStore,
-			consumerSecretStore
-		);
-		formObject.set(formData);
+
+		if (!get(ssr)) {
+			const formData = await fetchGFForm(backendUrl, formId, consumerKeyStore, consumerSecretStore);
+			formObject.set(formData);
+		}
 	});
 
 	/**
@@ -197,53 +226,9 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 				return;
 			}
 			formFields.set($formObject.fields);
+			const schema = generateFormSchema($formObject);
+			formSchema.set(schema);
 		}
-	});
-
-	// Set form schema
-	effect([formFields], ([$formFields]) => {
-		if (!$formFields) {
-			return;
-		}
-
-		const fieldsForSchema = $formFields.map((field) => {
-			const name = `input_${field.id}`;
-
-			let fieldType;
-
-			switch (field.type) {
-				case 'text':
-					fieldType = z.string();
-					break;
-				case 'textarea':
-					fieldType = z.string();
-					break;
-				default:
-					fieldType = z.string();
-					break;
-			}
-
-			if (field.isRequired) {
-				fieldType = fieldType.min(1, `${field.label} is required`);
-			}
-			if (field.maxLength && Number(field.maxLength) > 0) {
-				fieldType = fieldType.max(
-					Number(field.maxLength),
-					`${field.label} is too long (max ${field.maxLength} characters)`
-				);
-			}
-
-			return {
-				name,
-				fieldType: fieldType
-			};
-		});
-
-		const schema = z.object(
-			Object.fromEntries(fieldsForSchema.map((field) => [field.name, field.fieldType]))
-		);
-
-		formSchema.set(schema);
 	});
 
 	// Set submit button on mount if exists in form object data
@@ -270,18 +255,19 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	return {
 		states: {
 			formSchema,
-			formIdStore,
+			formId,
 			formObject,
 			formFields,
 			formRequiredIndicator,
 			formSubmtiButton,
 			isSubmitted,
 			comfirmationText,
-			formId,
 			backendUrl
 		},
 		methods: {
-			onSubmitForm
+			onSubmitForm,
+			getClientSidesuperForm,
+			getServerSideSuperForm
 		},
 		helpers: {
 			getColumnSpan,
@@ -294,6 +280,5 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			submitButtonRef
 		},
 		options
-		// Your methods here
 	};
 }

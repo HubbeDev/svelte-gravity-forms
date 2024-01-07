@@ -1,6 +1,11 @@
+import type { GFFormObjectProps } from '$lib/internal/types.js';
+
 export type Props = {
-	formId: number | undefined;
-	backendUrl: string | undefined;
-	consumerKey: string | undefined;
-	consumerSecret: string | undefined;
+	formId?: number;
+	backendUrl?: string;
+	consumerKey?: string;
+	consumerSecret?: string;
+	ssr?: boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	form?: GFFormObjectProps;
 };

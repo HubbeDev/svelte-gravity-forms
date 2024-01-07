@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { superForm, superValidateSync } from 'sveltekit-superforms/client';
 	import * as GFform from '$lib/components/form/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
+	import type { SuperValidated } from 'sveltekit-superforms';
 
 	type $$Props = Props;
 
@@ -10,44 +10,32 @@
 	export let backendUrl: $$Props['backendUrl'] = undefined;
 	export let consumerKey: $$Props['consumerKey'] = undefined;
 	export let consumerSecret: $$Props['consumerSecret'] = undefined;
+	export let ssr: $$Props['ssr'] = true;
+	export let form: $$Props['form'] = undefined;
 
 	const {
-		methods: { onSubmitForm },
+		methods: { getClientSidesuperForm },
 		states: { formSchema, formFields, formObject, isSubmitted, comfirmationText },
 		refs: { formRef }
 	} = setCtx({
 		formId: formId,
 		backendUrl: backendUrl,
 		consumerKey: consumerKey,
-		consumerSecret: consumerSecret
+		consumerSecret: consumerSecret,
+		ssr: ssr,
+		formObject: form
 	});
 
-	$: form = $formSchema
-		? superForm(superValidateSync($formSchema), {
-				SPA: true,
-				validators: $formSchema,
-				// Reset the form upon a successful result
-				applyAction: true,
-				invalidateAll: true,
-				resetForm: true,
-				async onUpdate({ form }) {
-					if (form.valid) {
-						if (!form.data) return;
-
-						await onSubmitForm(form.data);
-					}
-				}
-			})
-		: undefined;
+	$: formData = $formSchema ? getClientSidesuperForm($formSchema) : undefined;
 </script>
 
-{#if !form}
+{#if !formData}
 	<p>Please provide a formId</p>
 {:else}
 	<GFform.Root
 		asChild
 		method="POST"
-		{form}
+		form={formData}
 		controlled
 		schema={$formSchema}
 		let:enhance
