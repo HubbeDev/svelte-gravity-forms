@@ -36,9 +36,6 @@ importers:
       formsnap:
         specifier: ^0.4.2
         version: 0.4.2(svelte@4.2.8)(sveltekit-superforms@1.13.1)(zod@3.22.4)
-      js-sha1:
-        specifier: ^0.6.0
-        version: 0.6.0
       lucide-svelte:
         specifier: ^0.304.0
         version: 0.304.0(svelte@4.2.8)
@@ -79,9 +76,6 @@ importers:
       '@types/eslint':
         specifier: 8.56.0
         version: 8.56.0
-      '@types/js-sha1':
-        specifier: ^0.6.2
-        version: 0.6.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.0.0
         version: 6.17.0(@typescript-eslint/parser@6.17.0)(eslint@8.56.0)(typescript@5.2.2)
@@ -990,10 +984,6 @@ packages:
 
   /@types/http-cache-semantics@4.0.4:
     resolution: {integrity: sha512-1m0bIFVc7eJWyve9S0RnuRgcQqF/Xd5QsUZAZeQFr1Q3/p9JWoQQEqmVy+DPTNpGXwhgIetAoYF8JSc33q29QA==}
-    dev: true
-
-  /@types/js-sha1@0.6.2:
-    resolution: {integrity: sha512-gMqgiiF0fe1CAeZpJ6HHPBVqhb8OoRMY+9WvEjR7UT3+LUgsiZ6xHinbAP5FMDGC8wjOLVF+ZyLwQm7OZScUYw==}
     dev: true
 
   /@types/json-schema@7.0.12:
@@ -2861,10 +2851,6 @@ packages:
   /jiti@1.21.0:
     resolution: {integrity: sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==}
     hasBin: true
-
-  /js-sha1@0.6.0:
-    resolution: {integrity: sha512-01gwBFreYydzmU9BmZxpVk6svJJHrVxEN3IOiGl6VO93bVKYETJ0sIth6DASI6mIFdt7NmfX9UiByRzsYHGU9w==}
-    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
