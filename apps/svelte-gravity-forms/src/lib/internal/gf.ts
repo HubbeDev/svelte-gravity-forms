@@ -1,6 +1,5 @@
 import { onMount } from 'svelte';
 import { get, writable } from 'svelte/store';
-import { PUBLIC_GF_API_URL } from '$env/static/public';
 import { z, type AnyZodObject } from 'zod';
 import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 
@@ -11,13 +10,21 @@ import type {
 	GFFormObjectProps
 } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
+import { getClientFormObject, sendSubmission } from './helpers/gf-rest.js';
 
 export type CreateGravityFromsProps = {
-	formId?: number;
+	formId?: number | undefined;
+	backendUrl?: string;
+	consumerKey?: string;
+	consumerSecret?: string;
 };
 
 const defaultProps = {
-	formId: undefined
+	formId: undefined,
+	backendUrl: 'http://localhost:8888/wp-json',
+	formObjectData: undefined,
+	consumerKey: undefined,
+	consumerSecret: undefined
 };
 
 export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
@@ -27,13 +34,20 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	} satisfies CreateGravityFromsProps;
 
 	// Create writable stores for the form options
-	const options = toWritableStores(omit({ ...withDefaults }));
+	const options = toWritableStores(
+		omit({
+			...withDefaults
+		})
+	);
+
+	const { formId, backendUrl } = options;
 
 	// refs
 	const formRef = writable<HTMLFormElement | undefined>(undefined);
 	const submitButtonRef = writable<HTMLAttributes<HTMLButtonElement> | undefined>(undefined);
 
 	// states
+
 	const formObject = writable<GFFormObjectProps>(undefined);
 	const formFields = writable<GFFieldsProps[]>(undefined);
 	const formIdStore = writable(withDefaults.formId);
@@ -43,16 +57,23 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const defaultConfirmation = writable<GFComfirmationProps>(undefined);
 	const isSubmitted = writable<boolean>(false);
 
-	// Fetch form object from Gravity Forms API
-	async function getFormObject(formId: number) {
-		const res = await fetch(`${PUBLIC_GF_API_URL}/forms/${formId}`, { method: 'GET' });
-		const data = (await res.json()) as GFFormObjectProps;
-		return data;
-	}
+	const consumerKeyStore = writable(withDefaults.consumerKey);
+	const consumerSecretStore = writable(withDefaults.consumerSecret);
 
-	// Handle form submission
-	async function onSubmitForm(_formData: unknown) {
-		isSubmitted.set(true);
+	// Fetch form object from Gravity Forms API
+	async function onSubmitForm(req: { [x: string]: unknown }) {
+		try {
+			const submit = await sendSubmission(req, backendUrl, formId);
+
+			if (!submit.is_valid) {
+				throw new Error(submit.message);
+			}
+
+			isSubmitted.set(true);
+		} catch (err) {
+			// eslint-disable-next-line no-console
+			console.error(err);
+		}
 	}
 
 	// Calculate column span for a field
@@ -159,7 +180,12 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		if (!get(formIdStore)) {
 			return;
 		}
-		const formData = await getFormObject(get(formIdStore));
+		const formData = await getClientFormObject(
+			backendUrl,
+			formIdStore,
+			consumerKeyStore,
+			consumerSecretStore
+		);
 		formObject.set(formData);
 	});
 
@@ -273,7 +299,9 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			formRequiredIndicator,
 			formSubmtiButton,
 			isSubmitted,
-			defaultConfirmation
+			defaultConfirmation,
+			formId,
+			backendUrl
 		},
 		methods: {
 			onSubmitForm

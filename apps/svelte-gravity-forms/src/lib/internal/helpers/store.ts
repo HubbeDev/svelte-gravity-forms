@@ -1,5 +1,3 @@
-// Ref: https://github.com/huntabyte/vaul-svelte/blob/main/src/lib/internal/helpers/store.ts
-
 import type { Readable, Stores, StoresValues, Updater, Writable } from 'svelte/store';
 import { derived, writable } from 'svelte/store';
 import { onDestroy, onMount } from 'svelte';
@@ -38,6 +36,7 @@ export function effect<S extends Stores>(
 	safeOnDestroy(unsub);
 	return unsub;
 }
+
 /**
  * A utility function that creates a derived store that automatically
  * unsubscribes from its dependencies.
@@ -133,7 +132,6 @@ export type ToWritableStores<T extends Record<string, unknown>> = {
 };
 
 /**
- *
  * Given an object of properties, returns an object of writable stores
  * with the same properties and values.
  */

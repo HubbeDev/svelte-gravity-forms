@@ -7,14 +7,19 @@
 	type $$Props = Props;
 
 	export let formId: $$Props['formId'] = undefined;
+	export let backendUrl: $$Props['backendUrl'] = undefined;
+	export let consumerKey: $$Props['consumerKey'] = undefined;
+	export let consumerSecret: $$Props['consumerSecret'] = undefined;
 
 	const {
 		methods: { onSubmitForm },
-
 		states: { formSchema, formFields, formObject, isSubmitted, defaultConfirmation },
 		refs: { formRef }
 	} = setCtx({
-		formId: formId
+		formId: formId,
+		backendUrl: backendUrl,
+		consumerKey: consumerKey,
+		consumerSecret: consumerSecret
 	});
 
 	$: form = $formSchema

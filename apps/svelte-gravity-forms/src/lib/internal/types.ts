@@ -58,7 +58,7 @@ export type GFButtonProps = {
 	id?: string;
 };
 
-type GFComfirmationProps = {
+export type GFComfirmationProps = {
 	type?: string;
 	id?: string;
 	isDefault?: boolean;
