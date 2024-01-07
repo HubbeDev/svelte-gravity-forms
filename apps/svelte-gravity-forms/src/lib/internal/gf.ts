@@ -5,10 +5,9 @@ import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/h
 
 import type { GFButtonProps, GFFieldsProps, GFFormObjectProps } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
-import { fetchGFForm, sendSubmission } from './helpers/gf-rest.js';
+import { fetchGFForm, sendGFSubmission } from '../gf-rest.js';
 import { generateFormSchema } from './helpers/schema.js';
 import { superForm, superValidateSync } from 'sveltekit-superforms/client';
-import type { SuperValidated } from 'sveltekit-superforms';
 
 export type CreateGravityFromsProps = {
 	formId?: number | undefined;
@@ -22,7 +21,7 @@ export type CreateGravityFromsProps = {
 
 const defaultProps = {
 	formId: undefined,
-	backendUrl: 'http://localhost:8888/wp-json',
+	backendUrl: 'http://localhost:8888/wp-json/',
 	formObject: undefined,
 	consumerKey: undefined,
 	consumerSecret: undefined,
@@ -64,10 +63,11 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 	const consumerKeyStore = writable(withDefaults.consumerKey);
 	const consumerSecretStore = writable(withDefaults.consumerSecret);
 
-	function getClientSidesuperForm(schema: AnyZodObject) {
+	function getSuperForm(schema: AnyZodObject) {
 		if (!schema) return;
+
 		return superForm(superValidateSync(schema), {
-			SPA: true,
+			SPA: get(ssr) ? undefined : true,
 			validators: schema,
 			// Reset the form upon a successful result
 			applyAction: true,
@@ -76,21 +76,19 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			async onUpdate({ form }) {
 				if (form.valid) {
 					if (!form.data) return;
-					await onSubmitForm(form.data);
+					await onClientSubmitForm(form.data);
 				}
 			}
 		});
 	}
 
-	function getServerSideSuperForm(form: SuperValidated<AnyZodObject>) {
-		return form;
-	}
-
 	// Fetch form object from Gravity Forms API
-	async function onSubmitForm(req: { [x: string]: unknown }) {
+	async function onClientSubmitForm(req: { [x: string]: unknown }) {
 		try {
-			const resp = await sendSubmission(req, backendUrl, formId);
+			// bail if ssr
+			if (get(ssr)) return;
 
+			const resp = await sendGFSubmission(req, get(backendUrl), get(formId));
 			if (!resp.is_valid) {
 				throw new Error(JSON.stringify(resp.validation_messages));
 			}
@@ -265,9 +263,8 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			backendUrl
 		},
 		methods: {
-			onSubmitForm,
-			getClientSidesuperForm,
-			getServerSideSuperForm
+			onClientSubmitForm,
+			getSuperForm
 		},
 		helpers: {
 			getColumnSpan,

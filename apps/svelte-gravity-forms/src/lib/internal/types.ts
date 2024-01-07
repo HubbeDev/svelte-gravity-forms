@@ -97,7 +97,7 @@ export type GFFormObjectProps = {
 	descriptionPlacement?: string;
 };
 
-type FieldValuesProps = {
+export type FieldValuesProps = {
 	[key: string]: unknown;
 };
 

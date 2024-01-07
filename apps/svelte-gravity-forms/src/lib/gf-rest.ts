@@ -1,15 +1,16 @@
 import { get, writable, type Writable } from 'svelte/store';
-import type { GFFormObjectProps, GFSubmissionResponse } from '../types.js';
+import type { GFFormObjectProps, GFSubmissionResponse } from './internal/types.js';
 
 import OAuth from 'oauth-1.0a';
 import CryptoJS from 'crypto-js';
+import { generateFormSchema } from './internal/helpers/schema.js';
 
-export async function sendSubmission(
+export async function sendGFSubmission(
 	req: { [x: string]: unknown },
-	backendUrl: Writable<string | undefined>,
-	formId: Writable<number>
+	backendUrl: string,
+	formId: number
 ) {
-	const res = await fetch(`${get(backendUrl)}gf/v2/forms/${get(formId)}/submissions`, {
+	const res = await fetch(`${backendUrl}gf/v2/forms/${formId}/submissions`, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -59,7 +60,6 @@ export async function fetchGFForm(
 
 	const res = await fetch(url, { method: 'GET' });
 	// eslint-disable-next-line no-console
-	console.log(res);
 	const data = (await res.json()) as GFFormObjectProps;
 	return data;
 }
@@ -78,12 +78,16 @@ export async function getGFFormData(
 	const consumer_keyStore = writable(consumer_key);
 	const consumer_secretStore = writable(consumer_secret);
 
-	const formObject = fetchGFForm(
+	const formData = await fetchGFForm(
 		backendUrlStore,
 		formIdStore,
 		consumer_keyStore,
 		consumer_secretStore
 	);
 
-	return formObject;
+	const schema = generateFormSchema(formData);
+	return {
+		formData,
+		schema
+	};
 }

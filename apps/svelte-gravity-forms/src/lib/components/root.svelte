@@ -2,7 +2,6 @@
 	import * as GFform from '$lib/components/form/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
-	import type { SuperValidated } from 'sveltekit-superforms';
 
 	type $$Props = Props;
 
@@ -11,31 +10,31 @@
 	export let consumerKey: $$Props['consumerKey'] = undefined;
 	export let consumerSecret: $$Props['consumerSecret'] = undefined;
 	export let ssr: $$Props['ssr'] = true;
-	export let form: $$Props['form'] = undefined;
+	export let formData: $$Props['formData'] = undefined;
 
 	const {
-		methods: { getClientSidesuperForm },
+		methods: { getSuperForm },
 		states: { formSchema, formFields, formObject, isSubmitted, comfirmationText },
 		refs: { formRef }
 	} = setCtx({
-		formId: formId,
+		formId: formData ? formData.id : formId,
 		backendUrl: backendUrl,
 		consumerKey: consumerKey,
 		consumerSecret: consumerSecret,
 		ssr: ssr,
-		formObject: form
+		formObject: formData
 	});
 
-	$: formData = $formSchema ? getClientSidesuperForm($formSchema) : undefined;
+	$: superForm = $formSchema ? getSuperForm($formSchema) : undefined;
 </script>
 
-{#if !formData}
+{#if !superForm}
 	<p>Please provide a formId</p>
 {:else}
 	<GFform.Root
 		asChild
 		method="POST"
-		form={formData}
+		form={superForm}
 		controlled
 		schema={$formSchema}
 		let:enhance
