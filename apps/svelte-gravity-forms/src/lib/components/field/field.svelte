@@ -1,12 +1,10 @@
 <script lang="ts">
-	import * as GFform from '$lib/components/form/index.js';
+	import * as GFform from '$lib/components/index.js';
 	import type { Props, InputEvents } from './index.js';
 	import { getCtx } from '$lib/ctx.js';
 
 	type $$Props = Props;
 	type $$Events = InputEvents;
-
-	/* let className: $$Props['class'] = undefined; */
 
 	export let fieldId: $$Props['fieldId'];
 	export let label: $$Props['label'] = undefined;
@@ -39,7 +37,7 @@
 						{#if $formRequiredIndicator == 'asterisk'}
 							<span class="text-red-600">*</span>
 						{:else if $formRequiredIndicator == 'text'}
-							<span class="text-xs text-muted-foreground"> (required)</span>
+							<span class="text-muted-foreground text-xs"> (required)</span>
 						{/if}
 					{/if}
 				</GFform.Label>
@@ -59,6 +57,15 @@
 				/>
 			{:else if type === 'textarea'}
 				<GFform.Textarea value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
+			{:else if type === 'select'}
+				<GFform.Select>
+					<GFform.SelectTrigger placeholder="Select a verified email to display" />
+					<GFform.SelectContent>
+						<GFform.SelectItem value="m@example.com">m@example.com</GFform.SelectItem>
+						<GFform.SelectItem value="m@google.com">m@google.com</GFform.SelectItem>
+						<GFform.SelectItem value="m@support.com">m@support.com</GFform.SelectItem>
+					</GFform.SelectContent>
+				</GFform.Select>
 			{/if}
 
 			{#if description && showDescription(descriptionPosition, 'below')}
