@@ -9,26 +9,12 @@ import { Label } from '$components/label/index.js';
 import { Validation } from '$components/validation/index.js';
 import { FormField } from '$components/field/index.js';
 import { Button } from '$components/button/index.js';
-import {
-	SelectContent,
-	SelectLabel,
-	SelectGroup,
-	SelectItem,
-	SelectSeparator,
-	SelectTrigger,
-	Select as FormSelect,
-	SelectContent as FormSelectContent,
-	SelectLabel as FormSelectLabel,
-	SelectGroup as FormSelectGroup,
-	SelectItem as FormSelectItem,
-	SelectSeparator as FormSelectSeparator,
-	SelectTrigger as FormSelectTrigger
-} from '$components/select/index.js';
+import { FormSelect as Select } from '$components/select/index.js';
+import { NativeSelect } from '$components/select/index.js';
 
 const Root = FormPrimitive.Root;
 const Field = FormPrimitive.Field;
 const Control = FormPrimitive.Control;
-
 const NativeRadio = FormPrimitive.Radio;
 
 export type Props = {
@@ -48,12 +34,8 @@ export {
 	Validation,
 	Description,
 	NativeRadio,
-	SelectContent,
-	SelectLabel,
-	SelectGroup,
-	SelectItem,
-	SelectSeparator,
-	SelectTrigger,
+	Select,
+	NativeSelect,
 	//
 	Root as Form,
 	Field as BitsField,
@@ -67,11 +49,6 @@ export {
 	Validation as FormValidation,
 	NativeRadio as FormNativeRadio,
 	Button as FormButton,
-	FormSelect,
-	FormSelectContent,
-	FormSelectLabel,
-	FormSelectGroup,
-	FormSelectItem,
-	FormSelectSeparator,
-	FormSelectTrigger
+	Select as FormSelect,
+	NativeSelect as FormNativeSelect
 };

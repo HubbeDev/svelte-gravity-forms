@@ -60,20 +60,7 @@
 				</div>
 				{#if $formFields}
 					{#each $formFields as field, i}
-						<GFform.FormField
-							type={field.type}
-							index={i}
-							label={field.label}
-							labelPosition={field.labelPlacement}
-							description={field.description}
-							descriptionPosition={field.descriptionPlacement}
-							fieldId={field.id}
-							isRequired={field.isRequired}
-							defaultValue={field.defaultValue}
-							columnSpan={field.layoutGridColumnSpan}
-							placeholder={field.placeholder}
-							{config}
-						/>
+						<GFform.FormField {field} index={i} {config} />
 					{/each}
 				{/if}
 				<GFform.Button class="" size="lg" type="submit"></GFform.Button>

@@ -1,4 +1,11 @@
-export type GFFieldsProps = {
+export type GFFieldChoiceProps = {
+	text: string;
+	value: string;
+	isSelected: boolean;
+	price: string;
+};
+
+export type GFFieldProps = {
 	type?: string;
 	id: number;
 	formId?: number;
@@ -26,7 +33,7 @@ export type GFFieldsProps = {
 	defaultValue?: string;
 	enableAutocomplete?: boolean;
 	autocompleteAttribute?: string;
-	choices?: string;
+	choices?: GFFieldChoiceProps[];
 	conditionalLogic?: string;
 	productField?: string;
 	layoutGridColumnSpan?: number;
@@ -84,7 +91,7 @@ export type GFFormObjectProps = {
 	labelPlacement?: string;
 	requiredIndicator?: string;
 	version?: string;
-	fields?: GFFieldsProps[];
+	fields?: GFFieldProps[];
 	button?: GFButtonProps;
 	notifications?: unknown[];
 	confirmations?: GFComfirmationProps[];

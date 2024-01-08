@@ -1,20 +1,22 @@
 <script lang="ts">
-	import * as Select from './index.js';
-	import { getFormField } from 'formsnap';
-	import type { Select as SelectPrimitive } from 'bits-ui';
+	import * as GFform from './index.js';
+	import type { SelectProps } from './index.js';
 
-	type $$Props = SelectPrimitive.Props<unknown>;
-	const { setValue, name, value } = getFormField();
-	export let onSelectedChange: $$Props['onSelectedChange'] = undefined;
+	type $$Props = SelectProps;
+
+	export let placeholder: $$Props['placeholder'] = undefined;
+	export let choices: $$Props['choices'];
 </script>
 
-<Select.Root
-	onSelectedChange={(v) => {
-		onSelectedChange?.(v);
-		setValue(v ? v.value : undefined);
-	}}
-	{...$$restProps}
->
-	<slot />
-	<input hidden {name} value={$value} />
-</Select.Root>
+<GFform.Select {...$$restProps}>
+	<GFform.SelectTrigger {placeholder}>
+		<GFform.SelectValue {placeholder} />
+	</GFform.SelectTrigger>
+	<GFform.SelectContent>
+		{#each choices as choice}
+			<GFform.SelectItem value={choice.value} label={choice.text}>
+				{choice.text}
+			</GFform.SelectItem>
+		{/each}
+	</GFform.SelectContent>
+</GFform.Select>
