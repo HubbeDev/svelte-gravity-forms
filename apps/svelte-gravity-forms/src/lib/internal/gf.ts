@@ -3,7 +3,7 @@ import { get, writable } from 'svelte/store';
 import { type AnyZodObject } from 'zod';
 import { effect, omit, removeUndefined, toWritableStores } from '$lib/internal/helpers/index.js';
 
-import type { GFButtonProps, GFFieldsProps, GFFormObjectProps } from './types.js';
+import type { GFButtonProps, GFFieldProps, GFFormObjectProps } from './types.js';
 import type { HTMLAttributes } from 'svelte/elements';
 import { fetchGFForm, sendGFSubmission } from '../gf-rest.js';
 import { generateFormSchema } from './helpers/schema.js';
@@ -52,7 +52,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	// states
 
-	const formFields = writable<GFFieldsProps[]>(undefined);
+	const formFields = writable<GFFieldProps[]>(undefined);
 	const formObject = writable(withDefaults.formObject);
 	const formSchema = writable<AnyZodObject>();
 	const formRequiredIndicator = writable<string | undefined>(undefined);

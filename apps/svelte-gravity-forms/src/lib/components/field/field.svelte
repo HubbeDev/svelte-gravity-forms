@@ -1,25 +1,13 @@
 <script lang="ts">
-	import * as GFform from '$lib/components/form/index.js';
-	import type { Props, InputEvents } from './index.js';
+	import * as GFform from '$lib/components/index.js';
+	import type { Props } from './index.js';
 	import { getCtx } from '$lib/ctx.js';
 
 	type $$Props = Props;
-	type $$Events = InputEvents;
 
-	/* let className: $$Props['class'] = undefined; */
-
-	export let fieldId: $$Props['fieldId'];
-	export let label: $$Props['label'] = undefined;
-	export let labelPosition: $$Props['labelPosition'] = undefined;
-	export let description: $$Props['description'] = undefined;
-	export let descriptionPosition: $$Props['descriptionPosition'] = undefined;
-	export let isRequired: $$Props['isRequired'] = undefined;
-	export let defaultValue: $$Props['defaultValue'] = undefined;
-	export let placeholder: $$Props['placeholder'] = undefined;
-	export let columnSpan: $$Props['columnSpan'] = undefined;
+	export let field: $$Props['field'] = undefined;
 	export let index: $$Props['index'] = undefined;
 	export let config: $$Props['config'];
-	export let type: $$Props['type'] = undefined;
 
 	const {
 		helpers: { getColumnSpan, showFieldLabel, showDescription },
@@ -29,43 +17,67 @@
 	/* 	export { className as class }; */
 </script>
 
-<div data-svelte-gf-field-id={index} class={columnSpan ? getColumnSpan(columnSpan) : ''}>
-	<GFform.Field {config} name={`input_${fieldId}`}>
-		<GFform.Item>
-			{#if label && showFieldLabel(labelPosition, 'above')}
-				<GFform.Label>
-					{label}
-					{#if isRequired}
-						{#if $formRequiredIndicator == 'asterisk'}
-							<span class="text-red-600">*</span>
-						{:else if $formRequiredIndicator == 'text'}
-							<span class="text-xs text-muted-foreground"> (required)</span>
+{#if field}
+	<div
+		data-svelte-gf-field-id={index}
+		class={field.layoutGridColumnSpan ? getColumnSpan(field.layoutGridColumnSpan) : ''}
+	>
+		<GFform.Field {config} name={`input_${field.id}`}>
+			<GFform.Item>
+				{#if field.label && showFieldLabel(field.labelPlacement, 'above')}
+					<GFform.Label>
+						{field.label}
+						{#if field.isRequired}
+							{#if $formRequiredIndicator == 'asterisk'}
+								<span class="text-red-600">*</span>
+							{:else if $formRequiredIndicator == 'text'}
+								<span class="text-xs text-muted-foreground"> (required)</span>
+							{/if}
+						{/if}
+					</GFform.Label>
+				{/if}
+
+				{#if field.description && showDescription(field.descriptionPlacement, 'above')}
+					<GFform.Description>{field.description}</GFform.Description>
+				{/if}
+
+				{#if field.type === 'text'}
+					<GFform.Input
+						value={field.defaultValue ?? undefined}
+						placeholder={field.placeholder ?? ''}
+					/>
+				{:else if field.type === 'email'}
+					<GFform.Input
+						type="email"
+						value={field.defaultValue ?? undefined}
+						placeholder={field.placeholder ?? ''}
+					/>
+				{:else if field.type === 'textarea'}
+					<GFform.Textarea
+						value={field.defaultValue ?? undefined}
+						placeholder={field.placeholder ?? ''}
+					/>
+				{:else if field.type === 'select'}
+					{#if field.choices}
+						{#if field.enableEnhancedUI}
+							<GFform.Select choices={field.choices} placeholder={field.placeholder} />
+						{:else}
+							<GFform.FormNativeSelect class="w-full">
+								<option value="">{field.placeholder}</option>
+								{#each field.choices as choice}
+									<option value={choice.value}>{choice.text}</option>
+								{/each}
+							</GFform.FormNativeSelect>
 						{/if}
 					{/if}
-				</GFform.Label>
-			{/if}
+				{/if}
 
-			{#if description && showDescription(descriptionPosition, 'above')}
-				<GFform.Description>{description}</GFform.Description>
-			{/if}
+				{#if field.description && showDescription(field.descriptionPlacement, 'below')}
+					<GFform.Description>{field.description}</GFform.Description>
+				{/if}
 
-			{#if type === 'text'}
-				<GFform.Input value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
-			{:else if type === 'email'}
-				<GFform.Input
-					type="email"
-					value={defaultValue ?? undefined}
-					placeholder={placeholder ?? ''}
-				/>
-			{:else if type === 'textarea'}
-				<GFform.Textarea value={defaultValue ?? undefined} placeholder={placeholder ?? ''} />
-			{/if}
-
-			{#if description && showDescription(descriptionPosition, 'below')}
-				<GFform.Description>{description}</GFform.Description>
-			{/if}
-
-			<GFform.Validation />
-		</GFform.Item>
-	</GFform.Field>
-</div>
+				<GFform.Validation />
+			</GFform.Item>
+		</GFform.Field>
+	</div>
+{/if}

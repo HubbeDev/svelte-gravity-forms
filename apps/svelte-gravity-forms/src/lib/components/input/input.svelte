@@ -7,9 +7,9 @@
 	type $$Props = HTMLInputAttributes;
 	type $$Events = InputEvents;
 
-	/* 	const { attrStore, value } = getFormField(); */
-	const { attrStore, value } = getFormField();
 	let className: $$Props['class'] = undefined;
+
+	const { attrStore, value } = getFormField();
 
 	export { className as class };
 </script>

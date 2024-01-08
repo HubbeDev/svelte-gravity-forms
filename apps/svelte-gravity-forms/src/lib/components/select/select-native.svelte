@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Form as FormPrimitive } from 'formsnap';
-	import { buttonVariants } from '$lib/components/button/index.js';
+	import { buttonVariants } from '$components/button/index.js';
 	import { cn } from '$lib/utils.js';
 	import { ChevronDown } from 'lucide-svelte';
 	import type { HTMLSelectAttributes } from 'svelte/elements';

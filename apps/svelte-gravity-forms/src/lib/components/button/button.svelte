@@ -35,11 +35,13 @@
 	on:click
 	on:keydown
 >
-	{#if $formSubmtiButton?.text}
-		{$formSubmtiButton.text}
-	{:else if $formSubmtiButton?.imageUrl}
-		<img src={$formSubmtiButton.imageUrl} alt="" width="20" height="20" class="h-5 w-5" />
-	{:else}
-		Submit
-	{/if}
+	<slot>
+		{#if $formSubmtiButton?.text}
+			{$formSubmtiButton.text}
+		{:else if $formSubmtiButton?.imageUrl}
+			<img src={$formSubmtiButton.imageUrl} alt="" width="20" height="20" class="h-5 w-5" />
+		{:else}
+			Submit
+		{/if}
+	</slot>
 </ButtonPrimitive.Root>

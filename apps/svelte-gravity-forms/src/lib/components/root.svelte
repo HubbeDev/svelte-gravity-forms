@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as GFform from '$lib/components/form/index.js';
+	import * as GFform from '$lib/components/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
 
@@ -54,22 +54,13 @@
 					{@html $comfirmationText}
 				</div>
 			{:else}
+				<div class="col-span-12 mb-4">
+					<h3 class="mb-2 text-3xl font-bold">{$formObject.title}</h3>
+					<p class="text-base">{$formObject.description}</p>
+				</div>
 				{#if $formFields}
 					{#each $formFields as field, i}
-						<GFform.FormField
-							type={field.type}
-							index={i}
-							label={field.label}
-							labelPosition={field.labelPlacement}
-							description={field.description}
-							descriptionPosition={field.descriptionPlacement}
-							fieldId={field.id}
-							isRequired={field.isRequired}
-							defaultValue={field.defaultValue}
-							columnSpan={field.layoutGridColumnSpan}
-							placeholder={field.placeholder}
-							{config}
-						/>
+						<GFform.FormField {field} index={i} {config} />
 					{/each}
 				{/if}
 				<GFform.Button class="" size="lg" type="submit"></GFform.Button>
