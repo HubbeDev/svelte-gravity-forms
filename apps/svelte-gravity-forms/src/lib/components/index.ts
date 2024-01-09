@@ -3,6 +3,7 @@ import { Form as FormPrimitive } from 'formsnap';
 import * as SelectComp from '$lib/components/ui/select/index.js'; */
 import { Item } from '$components/item/index.js';
 import { Input } from '$components/input/index.js';
+import { NumberInput } from '$components/number/index.js';
 import { Textarea } from '$components/textarea/index.js';
 import { Description } from '$components/description/index.js';
 import { Label } from '$components/label/index.js';
@@ -36,19 +37,7 @@ export {
 	NativeRadio,
 	Select,
 	NativeSelect,
+	NumberInput,
 	//
-	Root as Form,
-	Field as BitsField,
-	FormField as GFFormField,
-	Control as FormControl,
-	Item as FormItem,
-	Input as FormInput,
-	Textarea as FormTextarea,
-	Description as FormDescription,
-	Label as FormLabel,
-	Validation as FormValidation,
-	NativeRadio as FormNativeRadio,
-	Button as FormButton,
-	Select as FormSelect,
-	NativeSelect as FormNativeSelect
+	Root as Form
 };

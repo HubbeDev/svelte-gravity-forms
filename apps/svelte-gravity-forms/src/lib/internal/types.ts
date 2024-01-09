@@ -51,6 +51,8 @@ export type GFFieldProps = {
 	errors?: unknown[];
 	checkboxLabel?: string;
 	pageNumber?: number;
+	rangeMin?: string;
+	rangeMax?: string;
 	fields?: string;
 };
 

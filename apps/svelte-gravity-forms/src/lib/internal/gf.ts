@@ -44,6 +44,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 		})
 	);
 
+	// @ts-expect-error Todo fix this type error
 	const { formId, backendUrl, ssr } = options;
 
 	// refs

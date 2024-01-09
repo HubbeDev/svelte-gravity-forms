@@ -1,14 +1,27 @@
 <script lang="ts">
-	import { Form as FormPrimitive } from 'formsnap';
-	import { cn } from '$lib/utils.js';
-	import type { HTMLAttributes } from 'svelte/elements';
+	import type { ValidationProps } from 'formsnap';
+	import { getFormField } from 'formsnap';
 
-	type $$Props = HTMLAttributes<HTMLParagraphElement>;
-	let className: string | undefined | null = undefined;
-	export { className as class };
+	type $$Props = ValidationProps;
+
+	export let tag = 'p';
+	const { actions, errors, ids } = getFormField();
+
+	$: attrs = {
+		'data-gf-validation': '',
+		'data-gf-error': $errors ? '' : undefined,
+		id: $ids.validation
+	};
 </script>
 
-<FormPrimitive.Validation
-	class={cn('pb-3 text-sm font-medium text-destructive', className)}
+<svelte:element
+	this={tag}
+	use:actions.validation
+	class="text-destructive pb-3 text-sm font-medium"
+	{...attrs}
 	{...$$restProps}
-/>
+>
+	{#if $errors}
+		{$errors}
+	{/if}
+</svelte:element>

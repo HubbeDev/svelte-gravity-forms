@@ -2,6 +2,7 @@
 	import * as GFform from '$lib/components/index.js';
 	import type { Props } from './types.js';
 	import { setCtx } from '../ctx.js';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 
 	type $$Props = Props;
 
@@ -31,6 +32,7 @@
 {#if !superForm}
 	<p>Please provide a formId</p>
 {:else}
+	<SuperDebug data={superForm} />
 	<GFform.Root
 		asChild
 		method="POST"

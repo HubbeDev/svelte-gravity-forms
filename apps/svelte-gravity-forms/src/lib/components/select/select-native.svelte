@@ -1,26 +1,30 @@
 <script lang="ts">
-	import { Form as FormPrimitive } from 'formsnap';
+	import { getFormField, type SelectProps } from 'formsnap';
+	import { ChevronDown } from 'lucide-svelte';
 	import { buttonVariants } from '$components/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import { ChevronDown } from 'lucide-svelte';
-	import type { HTMLSelectAttributes } from 'svelte/elements';
 
-	type $$Props = HTMLSelectAttributes;
+	type $$Props = SelectProps;
+	const { actions, errors, attrStore } = getFormField();
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
+	$: attrs = {
+		'data-gf-select': '',
+		'data-gf-error': $errors ? '' : undefined,
+		...$attrStore
+	};
 </script>
 
 <div class="relative">
-	<FormPrimitive.Select
+	<select
 		class={cn(
 			buttonVariants({ variant: 'outline' }),
-			'appearance-none bg-transparent font-normal',
-			className
+			'w-full appearance-none bg-transparent font-normal'
 		)}
 		{...$$restProps}
+		use:actions.select
+		{...attrs}
 	>
 		<slot />
-	</FormPrimitive.Select>
+	</select>
 	<ChevronDown class="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
 </div>

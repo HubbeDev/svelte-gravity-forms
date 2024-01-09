@@ -15,19 +15,9 @@ export type Arrayable<T> = T | T[];
 export type FormValidation = ZodValidation<AnyZodObject>;
 
 type Props = HTMLInputAttributes & {
-	/* 	fieldId: number; */
 	config: Form<FormValidation>;
 	field?: GFFieldProps;
-	/* label?: string;
-	labelPosition?: string;
-	description?: string;
-	descriptionPosition?: string;
-	isRequired?: boolean;
-	defaultValue?: string;
-	columnSpan?: number;
-	placeholder?: string; */
 	index?: number;
-	/* 	type?: string; */
 };
 
 export {

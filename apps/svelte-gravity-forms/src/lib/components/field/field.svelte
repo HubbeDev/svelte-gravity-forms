@@ -2,6 +2,7 @@
 	import * as GFform from '$lib/components/index.js';
 	import type { Props } from './index.js';
 	import { getCtx } from '$lib/ctx.js';
+	import { NumberInput } from '../number/index.js';
 
 	type $$Props = Props;
 
@@ -20,6 +21,7 @@
 {#if field}
 	<div
 		data-svelte-gf-field-id={index}
+		data-svelte-gf-field-type={field.type}
 		class={field.layoutGridColumnSpan ? getColumnSpan(field.layoutGridColumnSpan) : ''}
 	>
 		<GFform.Field {config} name={`input_${field.id}`}>
@@ -31,7 +33,7 @@
 							{#if $formRequiredIndicator == 'asterisk'}
 								<span class="text-red-600">*</span>
 							{:else if $formRequiredIndicator == 'text'}
-								<span class="text-xs text-muted-foreground"> (required)</span>
+								<span class="text-muted-foreground text-xs"> (required)</span>
 							{/if}
 						{/if}
 					</GFform.Label>
@@ -52,6 +54,13 @@
 						value={field.defaultValue ?? undefined}
 						placeholder={field.placeholder ?? ''}
 					/>
+				{:else if field.type === 'number'}
+					<GFform.NumberInput
+						min={field.rangeMin}
+						max={field.rangeMax}
+						value={field.defaultValue ?? undefined}
+						placeholder={field.placeholder ?? ''}
+					/>
 				{:else if field.type === 'textarea'}
 					<GFform.Textarea
 						value={field.defaultValue ?? undefined}
@@ -62,12 +71,12 @@
 						{#if field.enableEnhancedUI}
 							<GFform.Select choices={field.choices} placeholder={field.placeholder} />
 						{:else}
-							<GFform.FormNativeSelect class="w-full">
+							<GFform.NativeSelect>
 								<option value="">{field.placeholder}</option>
 								{#each field.choices as choice}
 									<option value={choice.value}>{choice.text}</option>
 								{/each}
-							</GFform.FormNativeSelect>
+							</GFform.NativeSelect>
 						{/if}
 					{/if}
 				{/if}
