@@ -7,6 +7,8 @@
 	export let tag = 'p';
 	const { actions, errors, ids } = getFormField();
 
+	console.log('errors', $errors);
+
 	$: attrs = {
 		'data-gf-validation': '',
 		'data-gf-error': $errors ? '' : undefined,

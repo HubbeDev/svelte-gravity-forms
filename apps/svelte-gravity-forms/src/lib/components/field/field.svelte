@@ -2,7 +2,6 @@
 	import * as GFform from '$lib/components/index.js';
 	import type { Props } from './index.js';
 	import { getCtx } from '$lib/ctx.js';
-	import { NumberInput } from '../number/index.js';
 
 	type $$Props = Props;
 
@@ -44,10 +43,7 @@
 				{/if}
 
 				{#if field.type === 'text'}
-					<GFform.Input
-						value={field.defaultValue ?? undefined}
-						placeholder={field.placeholder ?? ''}
-					/>
+					<GFform.Input />
 				{:else if field.type === 'email'}
 					<GFform.Input
 						type="email"
