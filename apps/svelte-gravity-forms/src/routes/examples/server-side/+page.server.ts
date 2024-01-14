@@ -4,10 +4,15 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { fail } from '@sveltejs/kit';
 
 export const load = async () => {
-	const { formData } = await getGFFormData(GF_API_URL, 1, GF_CONSUMER_KEY, GF_CONSUMER_SECRECT);
-	return {
-		formData: formData
-	};
+	const { formData, schema } = await getGFFormData(
+		GF_API_URL,
+		1,
+		GF_CONSUMER_KEY,
+		GF_CONSUMER_SECRECT
+	);
+
+	const form = await superValidate(schema);
+	return { form, formData: formData };
 };
 
 export const actions = {

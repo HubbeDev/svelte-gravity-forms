@@ -20,6 +20,7 @@
 {#if field}
 	<div
 		data-svelte-gf-field-id={index}
+		data-svelte-gf-field-type={field.type}
 		class={field.layoutGridColumnSpan ? getColumnSpan(field.layoutGridColumnSpan) : ''}
 	>
 		<GFform.Field {config} name={`input_${field.id}`}>
@@ -42,15 +43,18 @@
 				{/if}
 
 				{#if field.type === 'text'}
-					<GFform.Input
-						value={field.defaultValue ?? undefined}
-						placeholder={field.placeholder ?? ''}
-					/>
+					<GFform.Input />
 				{:else if field.type === 'email'}
 					<GFform.Input
 						type="email"
-						value={field.defaultValue ?? undefined}
+						value={field.defaultValue == '' ? null : field.defaultValue}
 						placeholder={field.placeholder ?? ''}
+					/>
+				{:else if field.type === 'number'}
+					<GFform.NumberInput
+						value={field.defaultValue == '' ? undefined : field.defaultValue}
+						placeholder={field.placeholder ?? ''}
+						numberFormat={field.numberFormat}
 					/>
 				{:else if field.type === 'textarea'}
 					<GFform.Textarea
@@ -62,18 +66,23 @@
 						{#if field.enableEnhancedUI}
 							<GFform.Select choices={field.choices} placeholder={field.placeholder} />
 						{:else}
-							<GFform.FormNativeSelect class="w-full">
+							<GFform.NativeSelect>
 								<option value="">{field.placeholder}</option>
 								{#each field.choices as choice}
 									<option value={choice.value}>{choice.text}</option>
 								{/each}
-							</GFform.FormNativeSelect>
+							</GFform.NativeSelect>
 						{/if}
 					{/if}
 				{/if}
 
 				{#if field.description && showDescription(field.descriptionPlacement, 'below')}
 					<GFform.Description>{field.description}</GFform.Description>
+				{/if}
+				{#if field.type === 'number'}
+					<GFform.Description>
+						Please enter a number from {field.rangeMin} to {field.rangeMax}.
+					</GFform.Description>
 				{/if}
 
 				<GFform.Validation />

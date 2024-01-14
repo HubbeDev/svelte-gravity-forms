@@ -4,4 +4,4 @@
 	export let data;
 </script>
 
-<SvelteGravityForm formData={data.formData} />
+<SvelteGravityForm formData={data.formData} form={data.form} />

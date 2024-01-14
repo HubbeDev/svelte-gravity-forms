@@ -1,26 +1,20 @@
 <script lang="ts">
-	import { Label as LabelPrimitive } from 'bits-ui';
-	import { getFormField } from 'formsnap';
-	import { cn } from '$lib/utils.js';
+	import { getFormField, type LabelProps } from 'formsnap';
 
-	type $$Props = LabelPrimitive.Props;
-	type $$Events = LabelPrimitive.Events;
-
-	let className: $$Props['class'] = undefined;
-	export { className as class };
-
-	const { errors } = getFormField();
-
-	$: className = $errors ? cn($errors && 'text-destructive', className) : className;
+	type $$Props = LabelProps;
+	const { actions, errors, ids } = getFormField();
+	$: attrs = {
+		'data-fs-label': '',
+		'data-fs-error': $errors ? '' : undefined,
+		for: $ids.input
+	};
 </script>
 
-<LabelPrimitive.Root
-	class={cn(
-		'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
-		className
-	)}
+<label
+	class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+	use:actions.label
 	{...$$restProps}
-	on:mousedown
+	{...attrs}
 >
 	<slot />
-</LabelPrimitive.Root>
+</label>

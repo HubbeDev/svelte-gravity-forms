@@ -5,6 +5,8 @@ export type GFFieldChoiceProps = {
 	price: string;
 };
 
+export type NumberFormats = 'decimal_comma' | 'decimal_dot' | 'currency';
+
 export type GFFieldProps = {
 	type?: string;
 	id: number;
@@ -30,7 +32,7 @@ export type GFFieldProps = {
 	cssClass?: string;
 	inputName?: string;
 	noDuplicates?: boolean;
-	defaultValue?: string;
+	defaultValue?: string | number;
 	enableAutocomplete?: boolean;
 	autocompleteAttribute?: string;
 	choices?: GFFieldChoiceProps[];
@@ -41,6 +43,7 @@ export type GFFieldProps = {
 	enableEnhancedUI?: number;
 	layoutGroupId?: string;
 	multipleFiles?: boolean;
+	numberFormat?: NumberFormats;
 	maxFiles?: string;
 	calculationFormula?: string;
 	calculationRounding?: string;
@@ -51,6 +54,8 @@ export type GFFieldProps = {
 	errors?: unknown[];
 	checkboxLabel?: string;
 	pageNumber?: number;
+	rangeMin?: string;
+	rangeMax?: string;
 	fields?: string;
 };
 
