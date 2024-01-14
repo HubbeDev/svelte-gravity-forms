@@ -40,20 +40,23 @@
 			e.preventDefault();
 		}
 	}
-	let numericValue = writable<number>(undefined);
+	let numericValue = writable<number | unknown>(undefined);
 	let inputValue = writable<string | number | unknown>($value);
 	$: {
 		if (!isNaN(Number($value)) && $value !== '') {
 			$numericValue = Number($value);
 		} else {
-			$numericValue = null; // allow the input to be empty
+			$numericValue = undefined; // allow the input to be empty
 		}
 
-		if ($numericValue !== null && $numericValue !== '') {
+		if ($numericValue !== undefined && $numericValue !== '') {
 			$value = $numericValue;
+		} else {
+			$value = undefined;
 		}
 
-		$inputValue = $numericValue !== null && $numericValue !== '' ? Number($numericValue) : '';
+		$inputValue =
+			$numericValue !== undefined && $numericValue !== '' ? Number($numericValue) : undefined;
 	}
 </script>
 
