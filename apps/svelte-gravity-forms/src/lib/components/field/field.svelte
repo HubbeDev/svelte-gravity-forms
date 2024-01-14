@@ -32,7 +32,7 @@
 							{#if $formRequiredIndicator == 'asterisk'}
 								<span class="text-red-600">*</span>
 							{:else if $formRequiredIndicator == 'text'}
-								<span class="text-muted-foreground text-xs"> (required)</span>
+								<span class="text-xs text-muted-foreground"> (required)</span>
 							{/if}
 						{/if}
 					</GFform.Label>
@@ -47,15 +47,14 @@
 				{:else if field.type === 'email'}
 					<GFform.Input
 						type="email"
-						value={field.defaultValue ?? undefined}
+						value={field.defaultValue == '' ? null : field.defaultValue}
 						placeholder={field.placeholder ?? ''}
 					/>
 				{:else if field.type === 'number'}
 					<GFform.NumberInput
-						min={field.rangeMin}
-						max={field.rangeMax}
-						value={field.defaultValue ?? undefined}
+						value={field.defaultValue == '' ? undefined : field.defaultValue}
 						placeholder={field.placeholder ?? ''}
+						numberFormat={field.numberFormat}
 					/>
 				{:else if field.type === 'textarea'}
 					<GFform.Textarea
@@ -79,6 +78,11 @@
 
 				{#if field.description && showDescription(field.descriptionPlacement, 'below')}
 					<GFform.Description>{field.description}</GFform.Description>
+				{/if}
+				{#if field.type === 'number'}
+					<GFform.Description>
+						Please enter a number from {field.rangeMin} to {field.rangeMax}.
+					</GFform.Description>
 				{/if}
 
 				<GFform.Validation />

@@ -7,5 +7,5 @@ export type Props = {
 	consumerSecret?: string;
 	ssr?: boolean;
 	formData?: GFFormObjectProps;
-	form?: any;
+	form?: unknown;
 };

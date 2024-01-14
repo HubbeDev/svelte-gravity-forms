@@ -7,8 +7,6 @@
 	export let tag = 'p';
 	const { actions, errors, ids } = getFormField();
 
-	console.log('errors', $errors);
-
 	$: attrs = {
 		'data-gf-validation': '',
 		'data-gf-error': $errors ? '' : undefined,
@@ -19,7 +17,7 @@
 <svelte:element
 	this={tag}
 	use:actions.validation
-	class="text-destructive pb-3 text-sm font-medium"
+	class="pb-3 text-sm font-medium text-destructive"
 	{...attrs}
 	{...$$restProps}
 >

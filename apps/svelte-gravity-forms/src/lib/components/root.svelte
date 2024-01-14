@@ -29,25 +29,25 @@
 	const options: FormOptions<typeof formSchema> = {
 		SPA: ssr ? undefined : true,
 		validators: $formSchema,
+		//  'auto' | 'oninput' | 'onblur' | 'submit-only' = 'auto',
+		validationMethod: 'onblur',
+		//'keep' | 'clear' = 'keep',
+		defaultValidator: 'clear',
 		// Reset the form upon a successful result
 		applyAction: true,
 		invalidateAll: true,
+		// Reset the form upon a successful result
 		resetForm: true,
-		taintedMessage: null
+		taintedMessage: null,
+		// On ActionResult> error, render the nearest +error.svelte pages
+		onError: 'apply'
 	};
 
 	$: form = !ssr ? getSuperForm($formSchema) : form;
-	$: console.log($formSchema);
-	$: console.log($formFields);
-	$: console.log($formObject);
-	$: console.log($isSubmitted);
-	$: console.log($comfirmationText);
-	$: console.log(form);
 </script>
 
 <GFform.Root {form} schema={$formSchema} {options} let:config debug={true}>
-	<div class="grid w-full max-w-xl grid-cols-12 gap-x-6">
-		<!-- <form method="POST" bind:this={$formRef} use:enhance {...attrs}> -->
+	<div class="w-full max-w-full grid-cols-12 gap-x-6 px-8 sm:grid sm:max-w-xl">
 		{#if $isSubmitted}
 			<div data-svelte-gf-confirmation class="col-span-12">
 				{@html $comfirmationText}
@@ -60,20 +60,9 @@
 			{#if $formFields}
 				{#each $formFields as field, i}
 					<GFform.FormField {field} index={i} {config} />
-					<fieldset>
-						<legend>Select your theme</legend>
-					</fieldset>
 				{/each}
 			{/if}
 			<GFform.Button size="lg" type="submit"></GFform.Button>
 		{/if}
 	</div>
-	<!-- 		</form> -->
 </GFform.Root>
-
-<!-- 
-{#if $formObject}
-	<div class="mt-6 max-w-lg bg-black p-2 text-left text-white">
-		<pre>{JSON.stringify($formObject, null, 2)}</pre>
-	</div>
-{/if} -->
