@@ -30,7 +30,7 @@
 		SPA: ssr ? undefined : true,
 		validators: $formSchema,
 		//  'auto' | 'oninput' | 'onblur' | 'submit-only' = 'auto',
-		validationMethod: 'onblur',
+		validationMethod: 'oninput',
 		//'keep' | 'clear' = 'keep',
 		defaultValidator: 'clear',
 		// Reset the form upon a successful result
