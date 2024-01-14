@@ -40,29 +40,26 @@
 			e.preventDefault();
 		}
 	}
-	let numericValue = writable<number>(0);
+	let numericValue = writable<number>(undefined);
 	let inputValue = writable<string | number | unknown>($value);
-
 	$: {
-		if (!isNaN(Number($value))) {
+		if (!isNaN(Number($value)) && $value !== '') {
 			$numericValue = Number($value);
 		} else {
-			$numericValue = 0; // or any default value you want
+			$numericValue = null; // allow the input to be empty
 		}
 
-		if ($numericValue === null) {
-			$value = undefined;
-		} else {
+		if ($numericValue !== null && $numericValue !== '') {
 			$value = $numericValue;
 		}
 
-		$inputValue = Number($numericValue);
+		$inputValue = $numericValue !== null && $numericValue !== '' ? Number($numericValue) : '';
 	}
 </script>
 
 <Input
 	class={cn(
-		'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0  file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+		'border-input ring-offset-background file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border bg-transparent px-3  py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
 		className
 	)}
 	{...attrs}
