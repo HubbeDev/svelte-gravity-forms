@@ -26,5 +26,7 @@
 	>
 		<slot />
 	</select>
-	<ChevronDown class="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
+	<slot name="icon">
+		<ChevronDown class="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
+	</slot>
 </div>

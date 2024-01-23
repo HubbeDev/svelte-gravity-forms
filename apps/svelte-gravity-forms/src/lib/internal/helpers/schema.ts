@@ -50,24 +50,6 @@ export function generateFormSchema(formObject: GFFormObjectProps) {
 			fieldType = fieldType.max(Number(field.maxLength));
 		}
 
-		/* if (field.maxLength && Number(field.maxLength) > 0) {
-			fieldType = fieldType.max(
-				Number(field.maxLength),
-				`${field.label} is too long (max ${field.maxLength} characters)`
-			);
-		} */
-
-		/* if (field.rangeMin && Number(field.rangeMin) > 0) {
-			fieldType = fieldType.min(
-				Number(field.rangeMin),
-				`${field.label} is too low (min ${field.rangeMin})`
-			);
-		} */
-
-		/* 		if (field.rangeMax) {
-			fieldType = fieldType.max(10, `${field.label} is too high (max 10)`);
-		} */
-
 		return {
 			name,
 			fieldType: fieldType

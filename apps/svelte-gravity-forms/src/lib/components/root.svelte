@@ -36,7 +36,6 @@
 		// Reset the form upon a successful result
 		applyAction: true,
 		invalidateAll: true,
-		// Reset the form upon a successful result
 		resetForm: true,
 		taintedMessage: null,
 		// On ActionResult> error, render the nearest +error.svelte pages

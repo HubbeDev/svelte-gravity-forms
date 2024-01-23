@@ -40,8 +40,10 @@
 			e.preventDefault();
 		}
 	}
+
 	let numericValue = writable<number | unknown>(undefined);
 	let inputValue = writable<string | number | unknown>($value);
+
 	$: {
 		if (!isNaN(Number($value)) && $value !== '') {
 			$numericValue = Number($value);
