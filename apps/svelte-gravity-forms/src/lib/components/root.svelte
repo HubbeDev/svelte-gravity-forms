@@ -15,7 +15,6 @@
 	export let form: $$Props['form'] = undefined;
 
 	const {
-		methods: { getSuperForm },
 		states: { formSchema, formFields, formObject, isSubmitted, comfirmationText }
 	} = setCtx({
 		formId: formData ? formData.id : formId,
@@ -41,27 +40,27 @@
 		// On ActionResult> error, render the nearest +error.svelte pages
 		onError: 'apply'
 	};
-
-	$: form = !ssr ? getSuperForm($formSchema) : form;
 </script>
 
-<GFform.Root {form} schema={$formSchema} {options} let:config debug={true}>
-	<div class="w-full max-w-full grid-cols-12 gap-x-6 px-8 sm:grid sm:max-w-xl">
-		{#if $isSubmitted}
-			<div data-svelte-gf-confirmation class="col-span-12">
-				{@html $comfirmationText}
-			</div>
-		{:else}
-			<div class="col-span-12 mb-4">
-				<h3 class="mb-2 text-3xl font-bold">{$formObject.title}</h3>
-				<p class="text-base">{$formObject.description}</p>
-			</div>
-			{#if $formFields}
-				{#each $formFields as field, i}
-					<GFform.FormField {field} index={i} {config} />
-				{/each}
+{#if form}
+	<GFform.Root {form} schema={$formSchema} {options} let:config debug={true}>
+		<div class="w-full max-w-full grid-cols-12 gap-x-6 px-8 sm:grid sm:max-w-xl">
+			{#if $isSubmitted}
+				<div data-svelte-gf-confirmation class="col-span-12">
+					{@html $comfirmationText}
+				</div>
+			{:else}
+				<div class="col-span-12 mb-4">
+					<h3 class="mb-2 text-3xl font-bold">{$formObject.title}</h3>
+					<p class="text-base">{$formObject.description}</p>
+				</div>
+				{#if $formFields}
+					{#each $formFields as field, i}
+						<GFform.FormField {field} index={i} {config} />
+					{/each}
+				{/if}
+				<GFform.Button size="lg" type="submit"></GFform.Button>
 			{/if}
-			<GFform.Button size="lg" type="submit"></GFform.Button>
-		{/if}
-	</div>
-</GFform.Root>
+		</div>
+	</GFform.Root>
+{/if}

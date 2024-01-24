@@ -7,7 +7,6 @@ import type { GFButtonProps, GFFieldProps, GFFormObjectProps } from './types.js'
 import type { HTMLAttributes } from 'svelte/elements';
 import { fetchGFForm, sendGFSubmission } from '../gf-rest.js';
 import { generateFormSchema } from './helpers/schema.js';
-import { superForm, superValidateSync } from 'sveltekit-superforms/client';
 
 export type CreateGravityFromsProps = {
 	formId?: number | undefined;
@@ -63,25 +62,6 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 
 	const consumerKeyStore = writable(withDefaults.consumerKey);
 	const consumerSecretStore = writable(withDefaults.consumerSecret);
-
-	function getSuperForm(schema: AnyZodObject) {
-		if (!schema) return;
-
-		return superForm(superValidateSync(schema), {
-			SPA: get(ssr) ? undefined : true,
-			validators: schema,
-			// Reset the form upon a successful result
-			applyAction: true,
-			invalidateAll: true,
-			resetForm: true,
-			async onUpdate({ form }) {
-				if (form.valid) {
-					if (!form.data) return;
-					await onClientSubmitForm(form.data);
-				}
-			}
-		});
-	}
 
 	// Fetch form object from Gravity Forms API
 	async function onClientSubmitForm(req: { [x: string]: unknown }) {
@@ -264,8 +244,7 @@ export function createSvelteGravityFroms(props: CreateGravityFromsProps) {
 			backendUrl
 		},
 		methods: {
-			onClientSubmitForm,
-			getSuperForm
+			onClientSubmitForm
 		},
 		helpers: {
 			getColumnSpan,

@@ -71,6 +71,6 @@
 	type="number"
 	step="1.00"
 	bind:value={$value}
-	on:keypress={handleKeyPress}
+	on:keypress={(e) => handleKeyPress(e.detail)}
 	{...$$restProps}
 />
